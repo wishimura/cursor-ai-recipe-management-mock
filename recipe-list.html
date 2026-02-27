@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>単品レシピ - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html" class="active"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">単品レシピ</span>
+        <div class="top-bar-actions">
+          <a href="recipe-add.html" class="btn btn-primary btn-sm">+ 新規登録</a>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- 検索 -->
+        <div class="search-bar">
+          <input type="text" class="form-control" placeholder="商品名で検索...">
+          <button class="btn btn-outline">検索</button>
+        </div>
+
+        <!-- カテゴリタブ -->
+        <div class="supplier-tabs">
+          <button class="supplier-tab active">全て</button>
+          <button class="supplier-tab">肉料理</button>
+          <button class="supplier-tab">海鮮</button>
+          <button class="supplier-tab">サイド</button>
+          <button class="supplier-tab">ドリンク</button>
+        </div>
+
+        <!-- 一覧 -->
+        <div class="card">
+          <div class="card-header">
+            <h3>単品レシピ一覧 <span class="badge badge-info">48件</span></h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>商品名</th>
+                  <th class="text-right">原価(1品)</th>
+                  <th class="text-right">提供価格</th>
+                  <th class="text-right">粗利益</th>
+                  <th class="text-right">原価率</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold">中ロース</td>
+                  <td class="text-right">492.8 円</td>
+                  <td class="text-right">2,150 円</td>
+                  <td class="text-right text-success">1,657 円</td>
+                  <td class="text-right"><span class="badge badge-success">22.9%</span></td>
+                  <td><a href="recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">上ロース</td>
+                  <td class="text-right">680.0 円</td>
+                  <td class="text-right">2,400 円</td>
+                  <td class="text-right text-success">1,720 円</td>
+                  <td class="text-right"><span class="badge badge-success">28.3%</span></td>
+                  <td><a href="recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">特上タン塩</td>
+                  <td class="text-right">1,050.0 円</td>
+                  <td class="text-right">2,800 円</td>
+                  <td class="text-right text-success">1,750 円</td>
+                  <td class="text-right"><span class="badge badge-warning">37.5%</span></td>
+                  <td><a href="recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">上タン塩</td>
+                  <td class="text-right">630.0 円</td>
+                  <td class="text-right">1,980 円</td>
+                  <td class="text-right text-success">1,350 円</td>
+                  <td class="text-right"><span class="badge badge-success">31.8%</span></td>
+                  <td><a href="recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">煮込みハンバーグ</td>
+                  <td class="text-right">385.0 円</td>
+                  <td class="text-right">1,680 円</td>
+                  <td class="text-right text-success">1,295 円</td>
+                  <td class="text-right"><span class="badge badge-success">22.9%</span></td>
+                  <td><a href="recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">ハラミ</td>
+                  <td class="text-right">890.0 円</td>
+                  <td class="text-right">1,980 円</td>
+                  <td class="text-right text-success">1,090 円</td>
+                  <td class="text-right"><span class="badge badge-danger">45.0%</span></td>
+                  <td><a href="recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">ナムル盛り合わせ</td>
+                  <td class="text-right">120.0 円</td>
+                  <td class="text-right">580 円</td>
+                  <td class="text-right text-success">460 円</td>
+                  <td class="text-right"><span class="badge badge-success">20.7%</span></td>
+                  <td><a href="recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">キムチ盛り合わせ</td>
+                  <td class="text-right">95.0 円</td>
+                  <td class="text-right">480 円</td>
+                  <td class="text-right text-success">385 円</td>
+                  <td class="text-right"><span class="badge badge-success">19.8%</span></td>
+                  <td><a href="recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAB -->
+    <a href="recipe-add.html" class="fab">+</a>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

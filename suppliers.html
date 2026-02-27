@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>業者管理 - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html" class="active"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">業者管理</span>
+        <div class="top-bar-actions">
+          <button class="btn btn-primary btn-sm" onclick="openModal('addSupplierModal')">+ 業者追加</button>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="alert alert-info">
+          <span>&#x2139;&#xFE0F;</span>
+          <span>ここで登録した業者が、仕入マスタや棚卸の業者選択に表示されます。</span>
+        </div>
+
+        <!-- 業者一覧 -->
+        <div class="card">
+          <div class="card-header">
+            <h3>業者一覧 <span class="badge badge-info">5社</span></h3>
+          </div>
+          <div class="card-body p-0">
+            <!-- 業者1 -->
+            <div style="padding: 14px 16px; border-bottom: 1px solid var(--gray-100);">
+              <div class="mb-8">
+                <span class="font-bold">A精肉店</span>
+              </div>
+              <div class="text-xs text-muted">登録食材数: 30件</div>
+              <div class="text-xs text-muted">連絡先: 022-xxx-xxxx</div>
+              <div class="mt-8">
+                <button class="btn btn-outline btn-sm" onclick="openModal('editSupplierModal')">編集</button>
+              </div>
+            </div>
+
+            <!-- 業者2 -->
+            <div style="padding: 14px 16px; border-bottom: 1px solid var(--gray-100);">
+              <div class="mb-8">
+                <span class="font-bold">B水産</span>
+              </div>
+              <div class="text-xs text-muted">登録食材数: 25件</div>
+              <div class="text-xs text-muted">連絡先: 022-xxx-xxxx</div>
+              <div class="mt-8">
+                <button class="btn btn-outline btn-sm" onclick="openModal('editSupplierModal')">編集</button>
+              </div>
+            </div>
+
+            <!-- 業者3 -->
+            <div style="padding: 14px 16px; border-bottom: 1px solid var(--gray-100);">
+              <div class="mb-8">
+                <span class="font-bold">C青果</span>
+              </div>
+              <div class="text-xs text-muted">登録食材数: 40件</div>
+              <div class="text-xs text-muted">連絡先: 022-xxx-xxxx</div>
+              <div class="mt-8">
+                <button class="btn btn-outline btn-sm" onclick="openModal('editSupplierModal')">編集</button>
+              </div>
+            </div>
+
+            <!-- 業者4 -->
+            <div style="padding: 14px 16px; border-bottom: 1px solid var(--gray-100);">
+              <div class="mb-8">
+                <span class="font-bold">D酒販</span>
+              </div>
+              <div class="text-xs text-muted">登録食材数: 35件</div>
+              <div class="text-xs text-muted">連絡先: 022-xxx-xxxx</div>
+              <div class="mt-8">
+                <button class="btn btn-outline btn-sm" onclick="openModal('editSupplierModal')">編集</button>
+              </div>
+            </div>
+
+            <!-- 業者5 -->
+            <div style="padding: 14px 16px;">
+              <div class="mb-8">
+                <span class="font-bold">E調味料</span>
+              </div>
+              <div class="text-xs text-muted">登録食材数: 26件</div>
+              <div class="text-xs text-muted">連絡先: 022-xxx-xxxx</div>
+              <div class="mt-8">
+                <button class="btn btn-outline btn-sm" onclick="openModal('editSupplierModal')">編集</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 業者追加モーダル -->
+  <div class="modal-overlay" id="addSupplierModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>業者追加</h3>
+        <button class="modal-close" onclick="closeModal('addSupplierModal')">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>業者名 <span class="required">*</span></label>
+          <input type="text" class="form-control" placeholder="例：A精肉店">
+        </div>
+        <div class="form-group">
+          <label>連絡先</label>
+          <input type="tel" class="form-control" placeholder="例：022-xxx-xxxx">
+        </div>
+        <div class="form-group">
+          <label>備考</label>
+          <textarea class="form-control" placeholder="メモがあれば入力"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('addSupplierModal')">キャンセル</button>
+        <button class="btn btn-primary" onclick="closeModal('addSupplierModal')">追加する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 業者編集モーダル -->
+  <div class="modal-overlay" id="editSupplierModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>業者編集</h3>
+        <button class="modal-close" onclick="closeModal('editSupplierModal')">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>業者名 <span class="required">*</span></label>
+          <input type="text" class="form-control" value="A精肉店">
+        </div>
+        <div class="form-group">
+          <label>連絡先</label>
+          <input type="tel" class="form-control" value="022-xxx-xxxx">
+        </div>
+        <div class="form-group">
+          <label>備考</label>
+          <textarea class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('editSupplierModal')">キャンセル</button>
+        <button class="btn btn-primary" onclick="closeModal('editSupplierModal')">更新する</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

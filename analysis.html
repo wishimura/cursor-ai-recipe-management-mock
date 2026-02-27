@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>分析 - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html" class="active"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">分析</span>
+        <div class="top-bar-actions"></div>
+      </div>
+
+      <div class="page-content">
+        <!-- 月商入力 -->
+        <div class="card mb-16">
+          <div class="card-header">
+            <h3>月商入力</h3>
+            <button class="btn btn-primary btn-sm" onclick="alert('保存しました')">保存</button>
+          </div>
+          <div class="card-body">
+            <div class="d-flex justify-between items-center mb-12">
+              <label class="font-bold" style="margin: 0;">対象年月</label>
+              <button class="btn btn-outline btn-sm" onclick="alert('新しい月（2026年3月）を作成しました')">+ 新しい月を作成</button>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>選択</label>
+                <select class="form-control">
+                  <option>2025年9月</option>
+                  <option>2025年10月</option>
+                  <option>2025年11月</option>
+                  <option>2025年12月</option>
+                  <option>2026年1月</option>
+                  <option selected>2026年2月</option>
+                </select>
+                <p class="text-xs text-muted mt-8">※ 作成済みの月から選択</p>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>月商（税抜）</label>
+                <div class="form-inline">
+                  <input type="number" class="form-control" placeholder="0" value="8500000">
+                  <span class="unit-label">円</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 今月サマリー -->
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">月商</div>
+            <div class="stat-value">¥8,500,000</div>
+            <div class="stat-sub">2026年2月</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">棚卸額</div>
+            <div class="stat-value">¥1,245,800</div>
+            <div class="stat-sub">月末在庫</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">売上原価率</div>
+            <div class="stat-value" style="color: var(--success);">28.5%</div>
+            <div class="stat-sub">前月比 -1.2%</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">棚卸率</div>
+            <div class="stat-value">14.7%</div>
+            <div class="stat-sub">前月比 +0.3%</div>
+          </div>
+        </div>
+
+        <!-- 月別データ一覧 -->
+        <div class="card">
+          <div class="card-header">
+            <h3>月別データ</h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>年月</th>
+                  <th class="text-right">月商</th>
+                  <th class="text-right">棚卸額</th>
+                  <th class="text-right">原価率</th>
+                  <th class="text-right">棚卸率</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold">2026/02</td>
+                  <td class="text-right">8,500,000</td>
+                  <td class="text-right">1,245,800</td>
+                  <td class="text-right"><span class="badge badge-success">28.5%</span></td>
+                  <td class="text-right">14.7%</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">2026/01</td>
+                  <td class="text-right">7,800,000</td>
+                  <td class="text-right">1,120,500</td>
+                  <td class="text-right"><span class="badge badge-warning">29.7%</span></td>
+                  <td class="text-right">14.4%</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">2025/12</td>
+                  <td class="text-right">9,200,000</td>
+                  <td class="text-right">1,288,000</td>
+                  <td class="text-right"><span class="badge badge-warning">29.7%</span></td>
+                  <td class="text-right">14.0%</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">2025/11</td>
+                  <td class="text-right">8,100,000</td>
+                  <td class="text-right">1,174,500</td>
+                  <td class="text-right"><span class="badge badge-warning">31.0%</span></td>
+                  <td class="text-right">14.5%</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">2025/10</td>
+                  <td class="text-right">8,300,000</td>
+                  <td class="text-right">1,178,600</td>
+                  <td class="text-right"><span class="badge badge-warning">29.5%</span></td>
+                  <td class="text-right">14.2%</td>
+                </tr>
+                <tr>
+                  <td class="font-bold">2025/09</td>
+                  <td class="text-right">7,600,000</td>
+                  <td class="text-right">1,048,800</td>
+                  <td class="text-right"><span class="badge badge-warning">30.2%</span></td>
+                  <td class="text-right">13.8%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

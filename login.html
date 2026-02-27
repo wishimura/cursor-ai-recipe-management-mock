@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ログイン - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-card">
+      <div class="app-icon">&#x1F373;</div>
+      <h1>レシピ原価管理</h1>
+      <p class="subtitle">Recipe Cost Manager</p>
+
+      <form onsubmit="location.href='purchase-list.html'; return false;">
+        <div class="form-group">
+          <label for="email">メールアドレス</label>
+          <input type="email" id="email" class="form-control" placeholder="mail@example.com" value="demo@example.com">
+        </div>
+        <div class="form-group">
+          <label for="password">パスワード</label>
+          <input type="password" id="password" class="form-control" placeholder="パスワードを入力" value="password">
+        </div>
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label style="display: flex; align-items: center; gap: 6px; font-weight: normal; cursor: pointer;">
+            <input type="checkbox" checked> ログイン状態を保持する
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block btn-lg">ログイン</button>
+      </form>
+
+      <p style="text-align: center; margin-top: 16px; font-size: 0.8rem; color: var(--gray-400);">
+        &copy; 2026 レシピ原価管理システム
+      </p>
+    </div>
+  </div>
+</body>
+</html>

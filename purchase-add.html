@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>食材登録 - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html" class="active"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">食材 新規登録</span>
+        <div class="top-bar-actions">
+          <a href="purchase-list.html" class="btn btn-outline btn-sm">戻る</a>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="card">
+          <div class="card-body">
+            <form onsubmit="location.href='purchase-list.html'; return false;">
+              <div class="form-group">
+                <label>業者名 <span class="required">*</span></label>
+                <select class="form-control">
+                  <option value="">業者を選択</option>
+                  <option>A精肉店</option>
+                  <option>B水産</option>
+                  <option>C青果</option>
+                  <option>D酒販</option>
+                  <option>E調味料</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label>材料名 <span class="required">*</span></label>
+                <input type="text" class="form-control" placeholder="例：仙台牛ブリスケ">
+              </div>
+
+              <div class="form-row mb-16">
+                <div class="form-group">
+                  <label>規格 <span class="required">*</span></label>
+                  <input type="number" class="form-control" placeholder="1000" value="1000">
+                </div>
+                <div class="form-group">
+                  <label>単位 <span class="required">*</span></label>
+                  <select class="form-control">
+                    <option>g</option>
+                    <option>ml</option>
+                    <option>個</option>
+                    <option>本</option>
+                    <option>枚</option>
+                    <option>パック</option>
+                    <option>缶</option>
+                    <option>袋</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>単価（税抜） <span class="required">*</span></label>
+                <div class="form-inline">
+                  <input type="number" class="form-control" placeholder="0">
+                  <span class="unit-label">円</span>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>1単価（自動計算）</label>
+                <div class="form-inline">
+                  <input type="text" class="form-control" value="0.00" disabled style="background: var(--gray-100);">
+                  <span class="unit-label">円</span>
+                </div>
+                <p class="text-xs text-muted mt-8">※ 単価 ÷ 規格 で自動算出されます</p>
+              </div>
+
+              <div class="form-group">
+                <label>入力者</label>
+                <input type="text" class="form-control" value="テスト 太郎" readonly style="background: var(--gray-100);">
+              </div>
+
+              <div class="form-group">
+                <label>入力日</label>
+                <input type="date" class="form-control" value="2026-02-27">
+              </div>
+
+              <div class="btn-group mt-16">
+                <button type="submit" class="btn btn-primary btn-block">登録する</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

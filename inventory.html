@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>棚卸 - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html" class="active"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">棚卸</span>
+        <div class="top-bar-actions">
+          <button class="btn btn-primary btn-sm" onclick="alert('2026年2月の棚卸を保存しました')">保存</button>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- 月選択 -->
+        <div class="card mb-16">
+          <div class="card-body">
+            <div class="d-flex justify-between items-center mb-12">
+              <label class="font-bold" style="margin: 0;">対象年月</label>
+              <button class="btn btn-outline btn-sm" onclick="alert('新しい月（2026年3月）を作成しました')">+ 新しい月を作成</button>
+            </div>
+            <div class="form-row">
+              <div class="form-group" style="margin-bottom: 0;">
+                <select class="form-control">
+                  <option>2025年9月</option>
+                  <option>2025年10月</option>
+                  <option>2025年11月</option>
+                  <option>2025年12月</option>
+                  <option>2026年1月</option>
+                  <option selected>2026年2月</option>
+                </select>
+                <p class="text-xs text-muted mt-8">※ 作成済みの月から選択</p>
+              </div>
+              <div class="form-group" style="margin-bottom: 0;">
+                <label>ステータス</label>
+                <div style="padding: 10px 0;">
+                  <span class="badge badge-warning">入力中</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 月末棚卸高サマリー -->
+        <div class="stats-grid" style="grid-template-columns: 1fr;">
+          <div class="stat-card">
+            <div class="stat-label">月末棚卸高（合計）</div>
+            <div class="stat-value">¥0</div>
+            <div class="stat-sub">全業者合計</div>
+          </div>
+        </div>
+
+        <!-- 業者タブ -->
+        <div class="supplier-tabs">
+          <button class="supplier-tab active">A精肉店</button>
+          <button class="supplier-tab">B水産</button>
+          <button class="supplier-tab">C青果</button>
+          <button class="supplier-tab">D酒販</button>
+          <button class="supplier-tab">E調味料</button>
+        </div>
+
+        <!-- 棚卸テーブル -->
+        <div class="card">
+          <div class="card-header">
+            <h3>A精肉店 <span class="text-sm text-muted font-bold" style="font-weight: normal;">小計: ¥0</span></h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>材料名</th>
+                  <th>単位</th>
+                  <th class="text-right">1単価</th>
+                  <th class="text-right">在庫数<br><span class="text-xs" style="font-weight: normal;">数/分量</span></th>
+                  <th class="text-right">在庫金額</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td class="font-bold">仙台牛ブリスケ</td>
+                  <td>g</td>
+                  <td class="text-right">4.80</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td class="font-bold">仙台牛シンタマ</td>
+                  <td>g</td>
+                  <td class="text-right">5.60</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td class="font-bold">国産牛ハラミ</td>
+                  <td>g</td>
+                  <td class="text-right">6.80</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td class="font-bold">国産牛ゲンコツカット</td>
+                  <td>g</td>
+                  <td class="text-right">0.23</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td class="font-bold">国産牛バラ骨</td>
+                  <td>g</td>
+                  <td class="text-right">0.20</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td class="font-bold">国産鶏ガラ</td>
+                  <td>g</td>
+                  <td class="text-right">0.30</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td class="font-bold">国産廃鶏</td>
+                  <td>g</td>
+                  <td class="text-right">0.42</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td class="font-bold">国産牛ケンネン脂</td>
+                  <td>g</td>
+                  <td class="text-right">0.20</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td class="font-bold">仙台牛スネ</td>
+                  <td>g</td>
+                  <td class="text-right">1.85</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+                <tr>
+                  <td>10</td>
+                  <td class="font-bold">AUST産牛タン</td>
+                  <td>g</td>
+                  <td class="text-right">4.20</td>
+                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                  <td class="text-right font-bold">0 円</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- 保存ボタン（下部） -->
+        <div class="mt-16">
+          <button class="btn btn-primary btn-block btn-lg" onclick="alert('2026年2月の棚卸を保存しました')">棚卸を保存する</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

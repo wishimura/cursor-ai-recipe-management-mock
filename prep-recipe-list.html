@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>仕込みレシピ - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html" class="active"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">仕込みレシピ</span>
+        <div class="top-bar-actions">
+          <a href="prep-recipe-add.html" class="btn btn-primary btn-sm">+ 新規登録</a>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- 検索 -->
+        <div class="search-bar">
+          <input type="text" class="form-control" placeholder="仕込み名で検索...">
+          <button class="btn btn-outline">検索</button>
+        </div>
+
+        <!-- 一覧 -->
+        <div class="card">
+          <div class="card-header">
+            <h3>仕込みレシピ一覧 <span class="badge badge-info">24件</span></h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>仕込み物名</th>
+                  <th class="text-right">総量(g)</th>
+                  <th class="text-right">単価合計</th>
+                  <th class="text-right">単価/g</th>
+                  <th>材料数</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="font-bold">味付けネギ</td>
+                  <td class="text-right">94.1</td>
+                  <td class="text-right">54.9 円</td>
+                  <td class="text-right font-bold">0.6 円</td>
+                  <td class="text-center">5</td>
+                  <td><a href="prep-recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">もみだれ</td>
+                  <td class="text-right">12,193</td>
+                  <td class="text-right">4,120.4 円</td>
+                  <td class="text-right font-bold">0.3 円</td>
+                  <td class="text-center">8</td>
+                  <td><a href="prep-recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">つけだれ</td>
+                  <td class="text-right">10,800</td>
+                  <td class="text-right">3,560.0 円</td>
+                  <td class="text-right font-bold">0.3 円</td>
+                  <td class="text-center">7</td>
+                  <td><a href="prep-recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">ハンバーグ生地</td>
+                  <td class="text-right">5,000</td>
+                  <td class="text-right">2,800.0 円</td>
+                  <td class="text-right font-bold">0.6 円</td>
+                  <td class="text-center">6</td>
+                  <td><a href="prep-recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">デミグラスソース</td>
+                  <td class="text-right">8,500</td>
+                  <td class="text-right">5,200.0 円</td>
+                  <td class="text-right font-bold">0.6 円</td>
+                  <td class="text-center">10</td>
+                  <td><a href="prep-recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td class="font-bold">ナムルの素</td>
+                  <td class="text-right">2,000</td>
+                  <td class="text-right">680.0 円</td>
+                  <td class="text-right font-bold">0.3 円</td>
+                  <td class="text-center">4</td>
+                  <td><a href="prep-recipe-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAB -->
+    <a href="prep-recipe-add.html" class="fab">+</a>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

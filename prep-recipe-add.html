@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>仕込みレシピ登録 - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html" class="active"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">仕込みレシピ 新規登録</span>
+        <div class="top-bar-actions">
+          <a href="prep-recipe-list.html" class="btn btn-outline btn-sm">戻る</a>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="card mb-16">
+          <div class="card-body">
+            <form onsubmit="location.href='prep-recipe-list.html'; return false;">
+              <div class="form-group">
+                <label>仕込み物名 <span class="required">*</span></label>
+                <input type="text" class="form-control" placeholder="例：味付けネギ">
+              </div>
+
+              <!-- 材料入力 -->
+              <div class="mb-16">
+                <div class="d-flex justify-between items-center mb-8">
+                  <label class="font-bold">使用材料</label>
+                  <button type="button" class="btn btn-outline btn-sm" onclick="alert('材料行を追加します')">+ 材料追加</button>
+                </div>
+
+                <div style="overflow-x: auto;">
+                  <div style="font-size: 0.75rem; color: var(--gray-500); display: grid; grid-template-columns: 1fr 80px 70px 70px 30px; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--gray-200);">
+                    <span>材料名</span>
+                    <span class="text-right">分量(g/ml)</span>
+                    <span class="text-right">1単価</span>
+                    <span class="text-right">単価</span>
+                    <span></span>
+                  </div>
+
+                  <div class="ingredient-row">
+                    <select class="form-control">
+                      <option value="">材料を選択</option>
+                      <option>長ネギ</option>
+                      <option>サンメイトソルト</option>
+                      <option>味の素</option>
+                    </select>
+                    <input type="number" class="form-control text-right" placeholder="0">
+                    <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
+                    <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
+                    <button type="button" class="remove-row">&#x2715;</button>
+                  </div>
+
+                  <div class="ingredient-row">
+                    <select class="form-control">
+                      <option value="">材料を選択</option>
+                      <option>長ネギ</option>
+                      <option>サンメイトソルト</option>
+                      <option>味の素</option>
+                    </select>
+                    <input type="number" class="form-control text-right" placeholder="0">
+                    <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
+                    <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
+                    <button type="button" class="remove-row">&#x2715;</button>
+                  </div>
+
+                  <div class="ingredient-row">
+                    <select class="form-control">
+                      <option value="">材料を選択</option>
+                      <option>長ネギ</option>
+                      <option>サンメイトソルト</option>
+                      <option>味の素</option>
+                    </select>
+                    <input type="number" class="form-control text-right" placeholder="0">
+                    <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
+                    <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
+                    <button type="button" class="remove-row">&#x2715;</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 合計 -->
+              <div class="cost-summary">
+                <div class="cost-summary-row">
+                  <span>総量</span>
+                  <span>0 g</span>
+                </div>
+                <div class="cost-summary-row total">
+                  <span>単価 合計</span>
+                  <span>0 円</span>
+                </div>
+                <div class="cost-summary-row">
+                  <span>単価/g</span>
+                  <span>0 円</span>
+                </div>
+              </div>
+
+              <div class="btn-group mt-16">
+                <button type="submit" class="btn btn-primary btn-block">登録する</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

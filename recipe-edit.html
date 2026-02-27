@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>単品レシピ編集 - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html" class="active"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">単品レシピ 編集</span>
+        <div class="top-bar-actions">
+          <a href="recipe-list.html" class="btn btn-outline btn-sm">戻る</a>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="card mb-16">
+          <div class="card-body">
+            <form onsubmit="location.href='recipe-list.html'; return false;">
+              <div class="form-group">
+                <label>商品名 <span class="required">*</span></label>
+                <input type="text" class="form-control" value="中ロース">
+              </div>
+
+              <div class="form-group">
+                <label>カテゴリ</label>
+                <select class="form-control">
+                  <option selected>肉料理</option>
+                  <option>海鮮</option>
+                  <option>サイド</option>
+                  <option>ドリンク</option>
+                </select>
+              </div>
+
+              <!-- 写真 -->
+              <div class="form-group">
+                <label>写真（最大3枚）</label>
+                <div class="photo-upload-area">
+                  <div class="photo-slot has-photo" style="background-color: var(--gray-200); position: relative;">
+                    <span style="font-size: 2rem;">&#x1F969;</span>
+                  </div>
+                  <div class="photo-slot">
+                    <span class="photo-icon">&#x1F4F7;</span>
+                    <span>写真2</span>
+                  </div>
+                  <div class="photo-slot">
+                    <span class="photo-icon">&#x1F4F7;</span>
+                    <span>写真3</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 材料・仕込み物入力 -->
+              <div class="mb-16">
+                <div class="d-flex justify-between items-center mb-8">
+                  <label class="font-bold">材料 &amp; 仕込み物</label>
+                  <div class="btn-group">
+                    <button type="button" class="btn btn-outline btn-sm">+ 食材</button>
+                    <button type="button" class="btn btn-outline btn-sm">+ 仕込み</button>
+                  </div>
+                </div>
+
+                <div style="overflow-x: auto;">
+                  <div style="font-size: 0.75rem; color: var(--gray-500); display: grid; grid-template-columns: 70px 1fr 70px 70px 70px 30px; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--gray-200);">
+                    <span>種別</span>
+                    <span>材料&amp;仕込み物</span>
+                    <span class="text-right">分量</span>
+                    <span class="text-right">1単価</span>
+                    <span class="text-right">原価</span>
+                    <span></span>
+                  </div>
+
+                  <div class="ingredient-row" style="grid-template-columns: 70px 1fr 70px 70px 70px 30px;">
+                    <span class="badge badge-info" style="align-self: center;">食材</span>
+                    <select class="form-control"><option selected>仙台牛しんたま</option></select>
+                    <input type="number" class="form-control text-right" value="80">
+                    <input type="text" class="form-control text-right" value="6.1" disabled style="background: var(--gray-100);">
+                    <input type="text" class="form-control text-right" value="488.0" disabled style="background: var(--gray-100);">
+                    <button type="button" class="remove-row">&#x2715;</button>
+                  </div>
+
+                  <div class="ingredient-row" style="grid-template-columns: 70px 1fr 70px 70px 70px 30px;">
+                    <span class="badge badge-warning" style="align-self: center;">仕込み</span>
+                    <select class="form-control"><option selected>もみだれ</option></select>
+                    <input type="number" class="form-control text-right" value="10">
+                    <input type="text" class="form-control text-right" value="0.3233" disabled style="background: var(--gray-100);">
+                    <input type="text" class="form-control text-right" value="3.2" disabled style="background: var(--gray-100);">
+                    <button type="button" class="remove-row">&#x2715;</button>
+                  </div>
+
+                  <div class="ingredient-row" style="grid-template-columns: 70px 1fr 70px 70px 70px 30px;">
+                    <span class="badge badge-info" style="align-self: center;">食材</span>
+                    <select class="form-control"><option selected>長ネギ</option></select>
+                    <input type="number" class="form-control text-right" value="0.5">
+                    <input type="text" class="form-control text-right" value="0.54" disabled style="background: var(--gray-100);">
+                    <input type="text" class="form-control text-right" value="0.3" disabled style="background: var(--gray-100);">
+                    <button type="button" class="remove-row">&#x2715;</button>
+                  </div>
+
+                  <div class="ingredient-row" style="grid-template-columns: 70px 1fr 70px 70px 70px 30px;">
+                    <span class="badge badge-info" style="align-self: center;">食材</span>
+                    <select class="form-control"><option selected>いりごま（白）</option></select>
+                    <input type="number" class="form-control text-right" value="0.5">
+                    <input type="text" class="form-control text-right" value="0.718" disabled style="background: var(--gray-100);">
+                    <input type="text" class="form-control text-right" value="0.4" disabled style="background: var(--gray-100);">
+                    <button type="button" class="remove-row">&#x2715;</button>
+                  </div>
+
+                  <div class="ingredient-row" style="grid-template-columns: 70px 1fr 70px 70px 70px 30px;">
+                    <span class="badge badge-info" style="align-self: center;">食材</span>
+                    <select class="form-control"><option selected>にんにく</option></select>
+                    <input type="number" class="form-control text-right" value="0.5">
+                    <input type="text" class="form-control text-right" value="0.8" disabled style="background: var(--gray-100);">
+                    <input type="text" class="form-control text-right" value="0.4" disabled style="background: var(--gray-100);">
+                    <button type="button" class="remove-row">&#x2715;</button>
+                  </div>
+
+                  <div class="ingredient-row" style="grid-template-columns: 70px 1fr 70px 70px 70px 30px;">
+                    <span class="badge badge-info" style="align-self: center;">食材</span>
+                    <select class="form-control"><option selected>UCC ごま油</option></select>
+                    <input type="number" class="form-control text-right" value="0.5">
+                    <input type="text" class="form-control text-right" value="1" disabled style="background: var(--gray-100);">
+                    <input type="text" class="form-control text-right" value="0.5" disabled style="background: var(--gray-100);">
+                    <button type="button" class="remove-row">&#x2715;</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 提供価格 -->
+              <div class="form-group">
+                <label>提供価格（税抜） <span class="required">*</span></label>
+                <div class="form-inline">
+                  <input type="number" class="form-control" value="2150">
+                  <span class="unit-label">円</span>
+                </div>
+              </div>
+
+              <!-- 原価サマリー -->
+              <div class="cost-summary">
+                <div class="cost-summary-row">
+                  <span>原価（1品）</span>
+                  <span class="font-bold">492.8 円</span>
+                </div>
+                <div class="cost-summary-row">
+                  <span>提供価格</span>
+                  <span>2,150 円</span>
+                </div>
+                <div class="cost-summary-row">
+                  <span>粗利益</span>
+                  <span class="text-success font-bold">1,657 円</span>
+                </div>
+                <div class="cost-summary-row">
+                  <span>粗利率</span>
+                  <span class="font-bold">77.1 %</span>
+                </div>
+                <div class="cost-summary-row total">
+                  <span>原価率</span>
+                  <span style="color: var(--success);">22.9 %</span>
+                </div>
+              </div>
+
+              <div class="btn-group mt-16" style="justify-content: space-between;">
+                <button type="button" class="btn btn-danger btn-sm" onclick="if(confirmDelete('中ロース')) location.href='recipe-list.html'">削除</button>
+                <button type="submit" class="btn btn-primary">更新する</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

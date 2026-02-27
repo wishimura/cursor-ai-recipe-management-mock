@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>仕入マスタ - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html" class="active"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">仕入マスタ</span>
+        <div class="top-bar-actions">
+          <a href="purchase-add.html" class="btn btn-primary btn-sm">+ 新規登録</a>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <!-- 業者タブ -->
+        <div class="supplier-tabs">
+          <button class="supplier-tab active">全て</button>
+          <button class="supplier-tab">A精肉店</button>
+          <button class="supplier-tab">B水産</button>
+          <button class="supplier-tab">C青果</button>
+          <button class="supplier-tab">D酒販</button>
+          <button class="supplier-tab">E調味料</button>
+        </div>
+
+        <!-- 検索 -->
+        <div class="search-bar">
+          <input type="text" class="form-control" placeholder="食材名で検索...">
+          <button class="btn btn-outline">検索</button>
+        </div>
+
+        <!-- 一覧テーブル -->
+        <div class="card">
+          <div class="card-header">
+            <h3>食材一覧 <span class="badge badge-info">156件</span></h3>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>材料名</th>
+                  <th>業者</th>
+                  <th class="text-right">規格</th>
+                  <th>単位</th>
+                  <th class="text-right">単価</th>
+                  <th class="text-right">1単価</th>
+                  <th>入力日</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td class="font-bold">仙台牛ブリスケ</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">4,800</td>
+                  <td class="text-right text-danger font-bold">4.80</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td class="font-bold">仙台牛シンタマ</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">5,600</td>
+                  <td class="text-right text-danger font-bold">5.60</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td class="font-bold">国産牛ハラミ</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">6,800</td>
+                  <td class="text-right text-danger font-bold">6.80</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td class="font-bold">国産牛ゲンコツカット</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">230</td>
+                  <td class="text-right text-danger font-bold">0.23</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td class="font-bold">国産牛バラ骨</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">200</td>
+                  <td class="text-right text-danger font-bold">0.20</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td class="font-bold">国産鶏ガラ</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">300</td>
+                  <td class="text-right text-danger font-bold">0.30</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td class="font-bold">国産廃鶏</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">420</td>
+                  <td class="text-right text-danger font-bold">0.42</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td class="font-bold">仙台牛スネ</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">1,850</td>
+                  <td class="text-right text-danger font-bold">1.85</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td>9</td>
+                  <td class="font-bold">AUST産牛タン</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">4,200</td>
+                  <td class="text-right text-danger font-bold">4.20</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+                <tr>
+                  <td>10</td>
+                  <td class="font-bold">国産牛黒タン</td>
+                  <td><span class="badge badge-info">A精肉店</span></td>
+                  <td class="text-right">1,000</td>
+                  <td>g</td>
+                  <td class="text-right">7,000</td>
+                  <td class="text-right text-danger font-bold">7.00</td>
+                  <td class="text-muted text-nowrap">2024/10/17</td>
+                  <td><a href="purchase-edit.html" class="btn btn-outline btn-sm">編集</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAB -->
+    <a href="purchase-add.html" class="fab">+</a>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>

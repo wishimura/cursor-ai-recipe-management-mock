@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>アカウント管理 - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html" class="active"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">アカウント管理</span>
+        <div class="top-bar-actions">
+          <button class="btn btn-primary btn-sm" onclick="openModal('addUserModal')">+ ユーザー追加</button>
+        </div>
+      </div>
+
+      <div class="page-content">
+        <div class="alert alert-info">
+          <span>&#x2139;&#xFE0F;</span>
+          <span>退社したユーザーは無効化することでログインを防止できます。データの閲覧・抜き出しも不可になります。</span>
+        </div>
+
+        <!-- ユーザー一覧 -->
+        <div class="card">
+          <div class="card-header">
+            <h3>ユーザー一覧 <span class="badge badge-info">4名</span></h3>
+          </div>
+          <div class="card-body p-0">
+            <!-- ユーザー1 -->
+            <div style="padding: 14px 16px; border-bottom: 1px solid var(--gray-100);">
+              <div class="d-flex justify-between items-center mb-8">
+                <div>
+                  <span class="font-bold">テスト 太郎</span>
+                  <span class="badge badge-success" style="margin-left: 6px;">管理者</span>
+                </div>
+                <span class="badge badge-success">有効</span>
+              </div>
+              <div class="text-xs text-muted">tanaka@example.com</div>
+              <div class="text-xs text-muted">最終ログイン: 2026/02/27 10:30</div>
+              <div class="mt-8">
+                <button class="btn btn-outline btn-sm" onclick="openModal('editUserModal')">編集</button>
+              </div>
+            </div>
+
+            <!-- ユーザー2 -->
+            <div style="padding: 14px 16px; border-bottom: 1px solid var(--gray-100);">
+              <div class="d-flex justify-between items-center mb-8">
+                <div>
+                  <span class="font-bold">佐藤 花子</span>
+                  <span class="badge badge-info" style="margin-left: 6px;">閲覧者</span>
+                </div>
+                <span class="badge badge-success">有効</span>
+              </div>
+              <div class="text-xs text-muted">sato@example.com</div>
+              <div class="text-xs text-muted">最終ログイン: 2026/02/26 18:45</div>
+              <div class="mt-8">
+                <button class="btn btn-outline btn-sm" onclick="openModal('editUserModal')">編集</button>
+              </div>
+            </div>
+
+            <!-- ユーザー3 -->
+            <div style="padding: 14px 16px; border-bottom: 1px solid var(--gray-100);">
+              <div class="d-flex justify-between items-center mb-8">
+                <div>
+                  <span class="font-bold">鈴木 一郎</span>
+                  <span class="badge badge-info" style="margin-left: 6px;">閲覧者</span>
+                </div>
+                <span class="badge badge-success">有効</span>
+              </div>
+              <div class="text-xs text-muted">suzuki@example.com</div>
+              <div class="text-xs text-muted">最終ログイン: 2026/02/25 09:15</div>
+              <div class="mt-8">
+                <button class="btn btn-outline btn-sm" onclick="openModal('editUserModal')">編集</button>
+              </div>
+            </div>
+
+            <!-- ユーザー4（無効化済み） -->
+            <div style="padding: 14px 16px; opacity: 0.5;">
+              <div class="d-flex justify-between items-center mb-8">
+                <div>
+                  <span class="font-bold">山田 次郎</span>
+                  <span class="badge badge-info" style="margin-left: 6px;">閲覧者</span>
+                </div>
+                <span class="badge badge-danger">無効</span>
+              </div>
+              <div class="text-xs text-muted">yamada@example.com</div>
+              <div class="text-xs text-muted">無効化日: 2026/01/15</div>
+              <div class="mt-8">
+                <button class="btn btn-outline btn-sm" onclick="openModal('editUserModal')">編集</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ユーザー追加モーダル -->
+  <div class="modal-overlay" id="addUserModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>ユーザー追加</h3>
+        <button class="modal-close" onclick="closeModal('addUserModal')">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>名前 <span class="required">*</span></label>
+          <input type="text" class="form-control" placeholder="例：テスト 太郎">
+        </div>
+        <div class="form-group">
+          <label>メールアドレス <span class="required">*</span></label>
+          <input type="email" class="form-control" placeholder="mail@example.com">
+        </div>
+        <div class="form-group">
+          <label>パスワード <span class="required">*</span></label>
+          <input type="password" class="form-control" placeholder="8文字以上">
+        </div>
+        <div class="form-group">
+          <label>権限 <span class="required">*</span></label>
+          <select class="form-control">
+            <option>閲覧者</option>
+            <option>管理者</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('addUserModal')">キャンセル</button>
+        <button class="btn btn-primary" onclick="closeModal('addUserModal')">追加する</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ユーザー編集モーダル -->
+  <div class="modal-overlay" id="editUserModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>ユーザー編集</h3>
+        <button class="modal-close" onclick="closeModal('editUserModal')">&#x2715;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label>名前 <span class="required">*</span></label>
+          <input type="text" class="form-control" value="佐藤 花子">
+        </div>
+        <div class="form-group">
+          <label>メールアドレス <span class="required">*</span></label>
+          <input type="email" class="form-control" value="sato@example.com">
+        </div>
+        <div class="form-group">
+          <label>パスワード変更</label>
+          <input type="password" class="form-control" placeholder="変更する場合のみ入力">
+        </div>
+        <div class="form-group">
+          <label>権限 <span class="required">*</span></label>
+          <select class="form-control">
+            <option selected>閲覧者</option>
+            <option>管理者</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>ステータス</label>
+          <select class="form-control">
+            <option selected>有効</option>
+            <option>無効（ログイン不可）</option>
+          </select>
+          <p class="text-xs text-muted mt-8">※ 無効にすると、このユーザーはログインできなくなります。</p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('editUserModal')">キャンセル</button>
+        <button class="btn btn-primary" onclick="closeModal('editUserModal')">更新する</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+</body>
+</html>
