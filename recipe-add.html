@@ -104,7 +104,9 @@
 
                   <div class="ingredient-row" style="grid-template-columns: 70px 1fr 70px 70px 70px 30px;">
                     <span class="badge badge-info" style="align-self: center;">食材</span>
-                    <select class="form-control"><option>材料を選択</option></select>
+                    <button type="button" class="ingredient-search-trigger placeholder" onclick="openModal('ingredientSearchModal')">
+                      <span class="search-icon">&#x1F50D;</span>食材を検索...
+                    </button>
                     <input type="number" class="form-control text-right" placeholder="0">
                     <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
                     <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
@@ -113,7 +115,9 @@
 
                   <div class="ingredient-row" style="grid-template-columns: 70px 1fr 70px 70px 70px 30px;">
                     <span class="badge badge-warning" style="align-self: center;">仕込み</span>
-                    <select class="form-control"><option>仕込みを選択</option></select>
+                    <button type="button" class="ingredient-search-trigger placeholder" onclick="openModal('prepSearchModal')">
+                      <span class="search-icon">&#x1F50D;</span>仕込みを検索...
+                    </button>
                     <input type="number" class="form-control text-right" placeholder="0">
                     <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
                     <input type="text" class="form-control text-right" value="" disabled style="background: var(--gray-100);">
@@ -161,6 +165,112 @@
             </form>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 食材検索モーダル -->
+  <div class="modal-overlay" id="ingredientSearchModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>食材を検索</h3>
+        <button class="modal-close" onclick="closeModal('ingredientSearchModal')">&#x2715;</button>
+      </div>
+      <div class="search-modal-body">
+        <div class="search-modal-input-wrap">
+          <input type="text" class="form-control" placeholder="食材名を入力して検索..." autofocus>
+        </div>
+        <ul class="search-result-list">
+          <li class="search-result-item" onclick="closeModal('ingredientSearchModal')">
+            <div>
+              <div class="item-name">仙台牛ブリスケ</div>
+              <div class="item-meta">A精肉店 / 4.80円/g</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('ingredientSearchModal')">
+            <div>
+              <div class="item-name">仙台牛シンタマ</div>
+              <div class="item-meta">A精肉店 / 5.60円/g</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('ingredientSearchModal')">
+            <div>
+              <div class="item-name">国産牛ハラミ</div>
+              <div class="item-meta">A精肉店 / 6.80円/g</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('ingredientSearchModal')">
+            <div>
+              <div class="item-name">長ネギ</div>
+              <div class="item-meta">C青果 / 0.54円/g</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('ingredientSearchModal')">
+            <div>
+              <div class="item-name">にんにく</div>
+              <div class="item-meta">C青果 / 0.80円/g</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('ingredientSearchModal')">
+            <div>
+              <div class="item-name">いりごま（白）</div>
+              <div class="item-meta">E調味料 / 0.72円/g</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('ingredientSearchModal')">
+            <div>
+              <div class="item-name">UCC ごま油</div>
+              <div class="item-meta">E調味料 / 1.00円/ml</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('ingredientSearchModal')">
+            <div>
+              <div class="item-name">サンメイトソルト</div>
+              <div class="item-meta">E調味料 / 0.30円/g</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 仕込み物検索モーダル -->
+  <div class="modal-overlay" id="prepSearchModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>仕込み物を検索</h3>
+        <button class="modal-close" onclick="closeModal('prepSearchModal')">&#x2715;</button>
+      </div>
+      <div class="search-modal-body">
+        <div class="search-modal-input-wrap">
+          <input type="text" class="form-control" placeholder="仕込み物名を入力して検索..." autofocus>
+        </div>
+        <ul class="search-result-list">
+          <li class="search-result-item" onclick="closeModal('prepSearchModal')">
+            <div>
+              <div class="item-name">もみだれ</div>
+              <div class="item-meta">0.32円/g</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('prepSearchModal')">
+            <div>
+              <div class="item-name">味付けネギ</div>
+              <div class="item-meta">0.58円/g</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('prepSearchModal')">
+            <div>
+              <div class="item-name">つけだれ</div>
+              <div class="item-meta">0.45円/g</div>
+            </div>
+          </li>
+          <li class="search-result-item" onclick="closeModal('prepSearchModal')">
+            <div>
+              <div class="item-name">自家製ポン酢</div>
+              <div class="item-meta">0.62円/g</div>
+            </div>
+          </li>
+        </ul>
       </div>
     </div>
   </div>

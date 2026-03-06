@@ -77,120 +77,419 @@
         <div class="stats-grid" style="grid-template-columns: 1fr;">
           <div class="stat-card">
             <div class="stat-label">月末棚卸高（合計）</div>
-            <div class="stat-value">¥0</div>
-            <div class="stat-sub">全業者合計</div>
+            <div class="stat-value">&#xA5;0</div>
+            <div class="stat-sub">仕入れマスタ &#xA5;0 ／ 仕込みレシピ &#xA5;0</div>
           </div>
         </div>
 
-        <!-- 業者タブ -->
-        <div class="supplier-tabs">
-          <button class="supplier-tab active">A精肉店</button>
-          <button class="supplier-tab">B水産</button>
-          <button class="supplier-tab">C青果</button>
-          <button class="supplier-tab">D酒販</button>
-          <button class="supplier-tab">E調味料</button>
+        <!-- 仕入れマスタ / 仕込みレシピ タブ切替 -->
+        <div class="tabs mb-16">
+          <button class="tab-btn active" onclick="switchInventoryTab('purchase', this)">仕入れマスタ</button>
+          <button class="tab-btn" onclick="switchInventoryTab('prep', this)">仕込みレシピ</button>
         </div>
 
-        <!-- 棚卸テーブル -->
-        <div class="card">
-          <div class="card-header">
-            <h3>A精肉店 <span class="text-sm text-muted font-bold" style="font-weight: normal;">小計: ¥0</span></h3>
+        <!-- ====== 仕入れマスタ棚卸 ====== -->
+        <div id="inventory-purchase">
+          <!-- 業者絞り込み -->
+          <div class="card mb-16">
+            <div class="card-body" style="padding: 12px 16px;">
+              <div class="d-flex items-center gap-12">
+                <label class="font-bold text-sm" style="margin: 0; white-space: nowrap;">業者で絞り込み:</label>
+                <select class="form-control" id="supplierFilter" onchange="filterBySupplier(this.value)" style="flex: 1;">
+                  <option value="all">全業者</option>
+                  <option value="a">A精肉店</option>
+                  <option value="b">B水産</option>
+                  <option value="c">C青果</option>
+                  <option value="d">D酒販</option>
+                  <option value="e">E調味料</option>
+                </select>
+              </div>
+            </div>
           </div>
-          <div class="table-wrapper">
-            <table>
-              <thead>
-                <tr>
-                  <th>No</th>
-                  <th>材料名</th>
-                  <th>単位</th>
-                  <th class="text-right">1単価</th>
-                  <th class="text-right">在庫数<br><span class="text-xs" style="font-weight: normal;">数/分量</span></th>
-                  <th class="text-right">在庫金額</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>1</td>
-                  <td class="font-bold">仙台牛ブリスケ</td>
-                  <td>g</td>
-                  <td class="text-right">4.80</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-                <tr>
-                  <td>2</td>
-                  <td class="font-bold">仙台牛シンタマ</td>
-                  <td>g</td>
-                  <td class="text-right">5.60</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td class="font-bold">国産牛ハラミ</td>
-                  <td>g</td>
-                  <td class="text-right">6.80</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-                <tr>
-                  <td>4</td>
-                  <td class="font-bold">国産牛ゲンコツカット</td>
-                  <td>g</td>
-                  <td class="text-right">0.23</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-                <tr>
-                  <td>5</td>
-                  <td class="font-bold">国産牛バラ骨</td>
-                  <td>g</td>
-                  <td class="text-right">0.20</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-                <tr>
-                  <td>6</td>
-                  <td class="font-bold">国産鶏ガラ</td>
-                  <td>g</td>
-                  <td class="text-right">0.30</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-                <tr>
-                  <td>7</td>
-                  <td class="font-bold">国産廃鶏</td>
-                  <td>g</td>
-                  <td class="text-right">0.42</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-                <tr>
-                  <td>8</td>
-                  <td class="font-bold">国産牛ケンネン脂</td>
-                  <td>g</td>
-                  <td class="text-right">0.20</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-                <tr>
-                  <td>9</td>
-                  <td class="font-bold">仙台牛スネ</td>
-                  <td>g</td>
-                  <td class="text-right">1.85</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-                <tr>
-                  <td>10</td>
-                  <td class="font-bold">AUST産牛タン</td>
-                  <td>g</td>
-                  <td class="text-right">4.20</td>
-                  <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
-                  <td class="text-right font-bold">0 円</td>
-                </tr>
-              </tbody>
-            </table>
+
+          <!-- A精肉店 -->
+          <div class="card mb-16 supplier-section" data-supplier="a">
+            <div class="card-header">
+              <h3>A精肉店</h3>
+              <span class="font-bold" style="color: var(--primary);">小計: &#xA5;0</span>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>材料名</th>
+                    <th>単位</th>
+                    <th class="text-right">1単価</th>
+                    <th class="text-right">在庫数<br><span class="text-xs" style="font-weight: normal;">数/分量</span></th>
+                    <th class="text-right">在庫金額</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td class="font-bold">仙台牛ブリスケ</td>
+                    <td>g</td>
+                    <td class="text-right">4.80</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td class="font-bold">仙台牛シンタマ</td>
+                    <td>g</td>
+                    <td class="text-right">5.60</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td class="font-bold">国産牛ハラミ</td>
+                    <td>g</td>
+                    <td class="text-right">6.80</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td class="font-bold">国産牛ゲンコツカット</td>
+                    <td>g</td>
+                    <td class="text-right">0.23</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td class="font-bold">国産牛バラ骨</td>
+                    <td>g</td>
+                    <td class="text-right">0.20</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td class="font-bold">国産鶏ガラ</td>
+                    <td>g</td>
+                    <td class="text-right">0.30</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>7</td>
+                    <td class="font-bold">国産廃鶏</td>
+                    <td>g</td>
+                    <td class="text-right">0.42</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>8</td>
+                    <td class="font-bold">国産牛ケンネン脂</td>
+                    <td>g</td>
+                    <td class="text-right">0.20</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>9</td>
+                    <td class="font-bold">仙台牛スネ</td>
+                    <td>g</td>
+                    <td class="text-right">1.85</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>10</td>
+                    <td class="font-bold">AUST産牛タン</td>
+                    <td>g</td>
+                    <td class="text-right">4.20</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- B水産 -->
+          <div class="card mb-16 supplier-section" data-supplier="b">
+            <div class="card-header">
+              <h3>B水産</h3>
+              <span class="font-bold" style="color: var(--primary);">小計: &#xA5;0</span>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>材料名</th>
+                    <th>単位</th>
+                    <th class="text-right">1単価</th>
+                    <th class="text-right">在庫数<br><span class="text-xs" style="font-weight: normal;">数/分量</span></th>
+                    <th class="text-right">在庫金額</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td class="font-bold">天然ホタテ</td>
+                    <td>個</td>
+                    <td class="text-right">120.00</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td class="font-bold">活車海老</td>
+                    <td>尾</td>
+                    <td class="text-right">250.00</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td class="font-bold">ズワイガニ棒肉</td>
+                    <td>g</td>
+                    <td class="text-right">8.50</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- C青果 -->
+          <div class="card mb-16 supplier-section" data-supplier="c">
+            <div class="card-header">
+              <h3>C青果</h3>
+              <span class="font-bold" style="color: var(--primary);">小計: &#xA5;0</span>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>材料名</th>
+                    <th>単位</th>
+                    <th class="text-right">1単価</th>
+                    <th class="text-right">在庫数<br><span class="text-xs" style="font-weight: normal;">数/分量</span></th>
+                    <th class="text-right">在庫金額</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td class="font-bold">長ネギ</td>
+                    <td>本</td>
+                    <td class="text-right">54.00</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td class="font-bold">にんにく</td>
+                    <td>g</td>
+                    <td class="text-right">0.80</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td class="font-bold">キャベツ</td>
+                    <td>玉</td>
+                    <td class="text-right">120.00</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td class="font-bold">大葉</td>
+                    <td>枚</td>
+                    <td class="text-right">3.00</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- D酒販 -->
+          <div class="card mb-16 supplier-section" data-supplier="d">
+            <div class="card-header">
+              <h3>D酒販</h3>
+              <span class="font-bold" style="color: var(--primary);">小計: &#xA5;0</span>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>材料名</th>
+                    <th>単位</th>
+                    <th class="text-right">1単価</th>
+                    <th class="text-right">在庫数<br><span class="text-xs" style="font-weight: normal;">数/分量</span></th>
+                    <th class="text-right">在庫金額</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td class="font-bold">生ビール（樽）</td>
+                    <td>L</td>
+                    <td class="text-right">450.00</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td class="font-bold">日本酒（一升）</td>
+                    <td>本</td>
+                    <td class="text-right">1800.00</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td class="font-bold">焼酎（一升）</td>
+                    <td>本</td>
+                    <td class="text-right">1200.00</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- E調味料 -->
+          <div class="card mb-16 supplier-section" data-supplier="e">
+            <div class="card-header">
+              <h3>E調味料</h3>
+              <span class="font-bold" style="color: var(--primary);">小計: &#xA5;0</span>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>材料名</th>
+                    <th>単位</th>
+                    <th class="text-right">1単価</th>
+                    <th class="text-right">在庫数<br><span class="text-xs" style="font-weight: normal;">数/分量</span></th>
+                    <th class="text-right">在庫金額</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td class="font-bold">いりごま（白）</td>
+                    <td>g</td>
+                    <td class="text-right">0.72</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td class="font-bold">UCC ごま油</td>
+                    <td>ml</td>
+                    <td class="text-right">1.00</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td class="font-bold">サンメイトソルト</td>
+                    <td>g</td>
+                    <td class="text-right">0.30</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td class="font-bold">味の素</td>
+                    <td>g</td>
+                    <td class="text-right">0.50</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== 仕込みレシピ棚卸 ====== -->
+        <div id="inventory-prep" style="display: none;">
+          <div class="card mb-16">
+            <div class="card-header">
+              <h3>仕込みレシピ棚卸</h3>
+            </div>
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>仕込み物名</th>
+                    <th>単位</th>
+                    <th class="text-right">単価/g</th>
+                    <th class="text-right">在庫数<br><span class="text-xs" style="font-weight: normal;">g</span></th>
+                    <th class="text-right">在庫金額</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>1</td>
+                    <td class="font-bold">味付けネギ</td>
+                    <td>g</td>
+                    <td class="text-right">0.58</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>2</td>
+                    <td class="font-bold">もみだれ</td>
+                    <td>g</td>
+                    <td class="text-right">0.32</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>3</td>
+                    <td class="font-bold">つけだれ</td>
+                    <td>g</td>
+                    <td class="text-right">0.45</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>4</td>
+                    <td class="font-bold">自家製ポン酢</td>
+                    <td>g</td>
+                    <td class="text-right">0.62</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>5</td>
+                    <td class="font-bold">特製塩だれ</td>
+                    <td>g</td>
+                    <td class="text-right">0.38</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                  <tr>
+                    <td>6</td>
+                    <td class="font-bold">味噌だれ</td>
+                    <td>g</td>
+                    <td class="text-right">0.55</td>
+                    <td class="text-right"><input type="number" class="inventory-input" placeholder="0"></td>
+                    <td class="text-right font-bold">0 円</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 
@@ -203,5 +502,27 @@
   </div>
 
   <script src="js/common.js"></script>
+  <script>
+    // 棚卸タブ切替
+    function switchInventoryTab(tab, btn) {
+      // タブボタン切替
+      document.querySelectorAll('.tabs .tab-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      // コンテンツ切替
+      document.getElementById('inventory-purchase').style.display = tab === 'purchase' ? '' : 'none';
+      document.getElementById('inventory-prep').style.display = tab === 'prep' ? '' : 'none';
+    }
+
+    // 業者絞り込み
+    function filterBySupplier(value) {
+      document.querySelectorAll('.supplier-section').forEach(function(section) {
+        if (value === 'all' || section.getAttribute('data-supplier') === value) {
+          section.style.display = '';
+        } else {
+          section.style.display = 'none';
+        }
+      });
+    }
+  </script>
 </body>
 </html>
