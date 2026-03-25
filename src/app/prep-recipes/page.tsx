@@ -147,7 +147,43 @@ export default function PrepRecipesPage() {
         </div>
       ) : (
         <div className="card overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Mobile card view */}
+          <div className="sm:hidden space-y-3 p-4">
+            {filtered.map((recipe) => (
+              <div key={recipe.id} className="bg-white rounded-lg border border-gray-200 p-4">
+                <div className="flex justify-between items-start">
+                  <p className="font-bold text-gray-900">{recipe.name}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-2 text-sm mt-3">
+                  <span className="text-gray-500">総量</span>
+                  <span className="text-gray-900">{recipe.total_weight_g.toLocaleString('ja-JP')}g</span>
+                  <span className="text-gray-500">原価合計</span>
+                  <span className="text-gray-900">{formatCurrency(recipe.total_cost)}</span>
+                  <span className="text-gray-500">g単価</span>
+                  <span className="text-gray-900">{formatCostPerGram(recipe.cost_per_gram)}</span>
+                </div>
+                <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 mt-3">
+                  <Link
+                    href={`/prep-recipes/${recipe.id}`}
+                    className="btn-secondary inline-flex items-center gap-1 text-sm px-3 py-1.5"
+                  >
+                    <Pencil size={14} />
+                    編集
+                  </Link>
+                  <button
+                    onClick={() => handleDelete(recipe.id, recipe.name)}
+                    className="inline-flex items-center gap-1 text-sm px-3 py-1.5 rounded-lg
+                               text-red-600 hover:bg-red-50 transition-colors"
+                  >
+                    <Trash2 size={14} />
+                    削除
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Desktop table view */}
+          <div className="hidden sm:block overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr>
