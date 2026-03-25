@@ -1,0 +1,409 @@
+'use client'
+
+import { useEffect, useState, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
+import Link from 'next/link'
+import { Plus, Trash2, ArrowLeft } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
+import AppLayout from '@/components/AppLayout'
+import type { Ingredient } from '@/types/database'
+
+type ItemRow = {
+  key: string
+  ingredient_id: string | null
+  name: string
+  quantity: number
+  unit: string
+  unit_cost: number
+  cost: number
+  searchQuery: string
+  showDropdown: boolean
+}
+
+const emptyRow = (): ItemRow => ({
+  key: crypto.randomUUID(),
+  ingredient_id: null,
+  name: '',
+  quantity: 0,
+  unit: 'g',
+  unit_cost: 0,
+  cost: 0,
+  searchQuery: '',
+  showDropdown: false,
+})
+
+export default function NewPrepRecipePage() {
+  const router = useRouter()
+  const supabase = createClient()
+
+  const [name, setName] = useState('')
+  const [notes, setNotes] = useState('')
+  const [items, setItems] = useState<ItemRow[]>([emptyRow()])
+  const [ingredients, setIngredients] = useState<Ingredient[]>([])
+  const [loading, setLoading] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [orgId, setOrgId] = useState<string | null>(null)
+  const [orgName, setOrgName] = useState('マイ店舗')
+
+  const fetchProfile = useCallback(async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+    if (!user) {
+      router.push('/login')
+      return null
+    }
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*, organization:organizations(*)')
+      .eq('id', user.id)
+      .single()
+    if (profile) {
+      setOrgId(profile.org_id)
+      setOrgName((profile as any).organization?.name ?? 'マイ店舗')
+    }
+    return profile
+  }, [supabase, router])
+
+  const fetchIngredients = useCallback(
+    async (organizationId: string) => {
+      const { data } = await supabase
+        .from('ingredients')
+        .select('*')
+        .eq('org_id', organizationId)
+        .order('name')
+      setIngredients(data ?? [])
+    },
+    [supabase]
+  )
+
+  useEffect(() => {
+    const init = async () => {
+      setLoading(true)
+      const profile = await fetchProfile()
+      if (profile?.org_id) {
+        await fetchIngredients(profile.org_id)
+      }
+      setLoading(false)
+    }
+    init()
+  }, [fetchProfile, fetchIngredients])
+
+  const updateItem = (index: number, updates: Partial<ItemRow>) => {
+    setItems((prev) =>
+      prev.map((item, i) => {
+        if (i !== index) return item
+        const updated = { ...item, ...updates }
+        if ('quantity' in updates || 'unit_cost' in updates) {
+          updated.cost = updated.quantity * updated.unit_cost
+        }
+        return updated
+      })
+    )
+  }
+
+  const selectIngredient = (index: number, ingredient: Ingredient) => {
+    updateItem(index, {
+      ingredient_id: ingredient.id,
+      name: ingredient.name,
+      unit: ingredient.cost_unit || ingredient.unit,
+      unit_cost: ingredient.unit_cost,
+      cost: items[index].quantity * ingredient.unit_cost,
+      searchQuery: ingredient.name,
+      showDropdown: false,
+    })
+  }
+
+  const addRow = () => setItems((prev) => [...prev, emptyRow()])
+
+  const removeRow = (index: number) => {
+    if (items.length <= 1) return
+    setItems((prev) => prev.filter((_, i) => i !== index))
+  }
+
+  const totalWeightG = items.reduce((sum, item) => sum + item.quantity, 0)
+  const totalCost = items.reduce((sum, item) => sum + item.cost, 0)
+  const costPerGram = totalWeightG > 0 ? totalCost / totalWeightG : 0
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!orgId || !name.trim()) return
+    if (items.some((item) => !item.name.trim() || item.quantity <= 0)) {
+      alert('すべての材料に名前と数量を入力してください。')
+      return
+    }
+
+    setSubmitting(true)
+
+    const { data: recipe, error: recipeError } = await supabase
+      .from('prep_recipes')
+      .insert({
+        org_id: orgId,
+        name: name.trim(),
+        total_weight_g: totalWeightG,
+        total_cost: totalCost,
+        cost_per_gram: costPerGram,
+        notes: notes.trim() || null,
+      })
+      .select()
+      .single()
+
+    if (recipeError || !recipe) {
+      alert('保存に失敗しました。')
+      console.error(recipeError)
+      setSubmitting(false)
+      return
+    }
+
+    const itemsToInsert = items.map((item) => ({
+      prep_recipe_id: recipe.id,
+      ingredient_id: item.ingredient_id,
+      name: item.name,
+      quantity: item.quantity,
+      unit: item.unit,
+      unit_cost: item.unit_cost,
+      cost: item.cost,
+    }))
+
+    const { error: itemsError } = await supabase
+      .from('prep_recipe_items')
+      .insert(itemsToInsert)
+
+    if (itemsError) {
+      alert('材料の保存に失敗しました。')
+      console.error(itemsError)
+      setSubmitting(false)
+      return
+    }
+
+    router.push('/prep-recipes')
+  }
+
+  const filteredIngredients = (query: string) => {
+    if (!query.trim()) return ingredients
+    const q = query.toLowerCase()
+    return ingredients.filter((ing) => ing.name.toLowerCase().includes(q))
+  }
+
+  if (loading) {
+    return (
+      <AppLayout title="仕込みレシピ追加" orgName={orgName}>
+        <div className="card p-12 text-center text-gray-500">読み込み中...</div>
+      </AppLayout>
+    )
+  }
+
+  return (
+    <AppLayout title="仕込みレシピ追加" orgName={orgName}>
+      <div className="mb-4">
+        <Link
+          href="/prep-recipes"
+          className="inline-flex items-center gap-1 text-sm text-gray-600 hover:text-gray-900 transition-colors"
+        >
+          <ArrowLeft size={16} />
+          一覧に戻る
+        </Link>
+      </div>
+
+      <form onSubmit={handleSubmit}>
+        {/* Basic info */}
+        <div className="card p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">基本情報</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="label">仕込み名 *</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="input-field w-full"
+                placeholder="例: チャーシュー"
+                required
+              />
+            </div>
+            <div>
+              <label className="label">備考</label>
+              <input
+                type="text"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="input-field w-full"
+                placeholder="メモ"
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Ingredient rows */}
+        <div className="card p-6 mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-900">材料一覧</h2>
+            <button type="button" onClick={addRow} className="btn-secondary inline-flex items-center gap-1 text-sm">
+              <Plus size={16} />
+              行を追加
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {/* Header */}
+            <div className="hidden sm:grid sm:grid-cols-12 gap-2 text-xs font-medium text-gray-500 px-1">
+              <div className="col-span-4">材料名</div>
+              <div className="col-span-2">数量</div>
+              <div className="col-span-1">単位</div>
+              <div className="col-span-2">単価</div>
+              <div className="col-span-2">原価</div>
+              <div className="col-span-1"></div>
+            </div>
+
+            {items.map((item, index) => (
+              <div
+                key={item.key}
+                className="grid grid-cols-1 sm:grid-cols-12 gap-2 items-start p-3 bg-gray-50 rounded-lg"
+              >
+                {/* Name search dropdown */}
+                <div className="sm:col-span-4 relative">
+                  <label className="label sm:hidden">材料名</label>
+                  <input
+                    type="text"
+                    value={item.showDropdown ? item.searchQuery : item.name}
+                    onChange={(e) =>
+                      updateItem(index, {
+                        searchQuery: e.target.value,
+                        showDropdown: true,
+                        name: e.target.value,
+                        ingredient_id: null,
+                      })
+                    }
+                    onFocus={() => updateItem(index, { showDropdown: true, searchQuery: item.name })}
+                    onBlur={() => setTimeout(() => updateItem(index, { showDropdown: false }), 200)}
+                    className="input-field w-full"
+                    placeholder="材料を検索..."
+                  />
+                  {item.showDropdown && (
+                    <div className="absolute z-10 top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto">
+                      {filteredIngredients(item.searchQuery).map((ing) => (
+                        <button
+                          key={ing.id}
+                          type="button"
+                          className="w-full text-left px-3 py-2 text-sm hover:bg-gray-50 transition-colors"
+                          onMouseDown={() => selectIngredient(index, ing)}
+                        >
+                          <span className="font-medium">{ing.name}</span>
+                          <span className="text-gray-500 ml-2">
+                            ¥{ing.unit_cost}/{ing.cost_unit || ing.unit}
+                          </span>
+                        </button>
+                      ))}
+                      {filteredIngredients(item.searchQuery).length === 0 && (
+                        <div className="px-3 py-2 text-sm text-gray-400">該当なし</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                {/* Quantity */}
+                <div className="sm:col-span-2">
+                  <label className="label sm:hidden">数量</label>
+                  <input
+                    type="number"
+                    value={item.quantity || ''}
+                    onChange={(e) =>
+                      updateItem(index, { quantity: parseFloat(e.target.value) || 0 })
+                    }
+                    className="input-field w-full"
+                    placeholder="0"
+                    min="0"
+                    step="any"
+                  />
+                </div>
+
+                {/* Unit */}
+                <div className="sm:col-span-1">
+                  <label className="label sm:hidden">単位</label>
+                  <input
+                    type="text"
+                    value={item.unit}
+                    onChange={(e) => updateItem(index, { unit: e.target.value })}
+                    className="input-field w-full"
+                  />
+                </div>
+
+                {/* Unit cost */}
+                <div className="sm:col-span-2">
+                  <label className="label sm:hidden">単価</label>
+                  <input
+                    type="number"
+                    value={item.unit_cost || ''}
+                    onChange={(e) =>
+                      updateItem(index, { unit_cost: parseFloat(e.target.value) || 0 })
+                    }
+                    className="input-field w-full bg-gray-100"
+                    placeholder="0"
+                    step="any"
+                  />
+                </div>
+
+                {/* Cost */}
+                <div className="sm:col-span-2">
+                  <label className="label sm:hidden">原価</label>
+                  <div className="input-field w-full bg-gray-100 text-gray-700">
+                    ¥{item.cost.toLocaleString('ja-JP', { maximumFractionDigits: 1 })}
+                  </div>
+                </div>
+
+                {/* Delete */}
+                <div className="sm:col-span-1 flex items-end justify-end">
+                  <button
+                    type="button"
+                    onClick={() => removeRow(index)}
+                    disabled={items.length <= 1}
+                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-30"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Summary */}
+        <div className="card p-6 mb-6">
+          <h2 className="text-lg font-semibold text-gray-900 mb-4">合計</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-blue-50 rounded-lg p-4 text-center">
+              <p className="text-sm text-blue-600 mb-1">総量</p>
+              <p className="text-2xl font-bold text-blue-900">
+                {totalWeightG.toLocaleString('ja-JP')}
+                <span className="text-sm font-normal ml-1">g</span>
+              </p>
+            </div>
+            <div className="bg-green-50 rounded-lg p-4 text-center">
+              <p className="text-sm text-green-600 mb-1">原価合計</p>
+              <p className="text-2xl font-bold text-green-900">
+                ¥{totalCost.toLocaleString('ja-JP', { maximumFractionDigits: 0 })}
+              </p>
+            </div>
+            <div className="bg-purple-50 rounded-lg p-4 text-center">
+              <p className="text-sm text-purple-600 mb-1">g単価</p>
+              <p className="text-2xl font-bold text-purple-900">
+                {costPerGram.toFixed(2)}
+                <span className="text-sm font-normal ml-1">円/g</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center justify-end gap-3">
+          <Link href="/prep-recipes" className="btn-secondary">
+            キャンセル
+          </Link>
+          <button type="submit" disabled={submitting} className="btn-primary">
+            {submitting ? '保存中...' : '保存する'}
+          </button>
+        </div>
+      </form>
+    </AppLayout>
+  )
+}
