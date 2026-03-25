@@ -33,7 +33,7 @@ export default function LoginPage() {
           ? 'メールアドレスまたはパスワードが正しくありません'
           : error.message === 'Email not confirmed'
           ? 'メールアドレスが確認されていません。受信トレイをご確認ください'
-          : `ログインに失敗しました: ${error.message}`
+          : 'ログインに失敗しました。しばらく経ってからお試しください。'
       )
       setLoading(false)
       return
@@ -76,10 +76,17 @@ export default function LoginPage() {
     })
 
     if (error) {
+      const msg = error.message
       setError(
-        error.message === 'User already registered'
+        msg === 'User already registered'
           ? 'このメールアドレスは既に登録されています'
-          : `登録に失敗しました: ${error.message}`
+          : msg.includes('not match the expected pattern')
+          ? 'メールアドレスの形式が正しくありません'
+          : msg === 'Signup requires a valid password'
+          ? 'パスワードを入力してください'
+          : msg.includes('Password should be')
+          ? 'パスワードは6文字以上で入力してください'
+          : `登録に失敗しました。しばらく経ってからお試しください。`
       )
       setLoading(false)
       return
@@ -93,6 +100,7 @@ export default function LoginPage() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             user_id: data.user.id,
+            email: data.user.email,
             full_name: fullName,
             org_name: organizationName,
           }),
