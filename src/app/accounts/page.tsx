@@ -214,6 +214,7 @@ export default function AccountsPage() {
               メンバーが登録されていません
             </div>
           ) : (
+            <>
             {/* Mobile card view */}
             <div className="sm:hidden space-y-3 p-4">
               {profiles.map((profile) => (
@@ -303,6 +304,7 @@ export default function AccountsPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
       </div>

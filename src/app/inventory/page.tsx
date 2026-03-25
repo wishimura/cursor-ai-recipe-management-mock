@@ -307,6 +307,7 @@ export default function InventoryPage() {
                 : '仕込みレシピが登録されていません'}
             </div>
           ) : (
+            <>
             {/* Mobile card view */}
             <div className="sm:hidden space-y-3 p-4">
               {filteredRows.map((row) => {
@@ -391,6 +392,7 @@ export default function InventoryPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
 
