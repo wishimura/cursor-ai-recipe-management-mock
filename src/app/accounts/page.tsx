@@ -214,7 +214,48 @@ export default function AccountsPage() {
               メンバーが登録されていません
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            {/* Mobile card view */}
+            <div className="sm:hidden space-y-3 p-4">
+              {profiles.map((profile) => (
+                <div key={profile.id} className="bg-white rounded-lg border border-gray-200 p-4">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-bold text-gray-900">
+                        {profile.full_name || '(未設定)'}
+                        {profile.id === userId && (
+                          <span className="ml-2 text-xs text-gray-400">（自分）</span>
+                        )}
+                      </p>
+                    </div>
+                    <div>{roleBadge(profile.role)}</div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-sm mt-3">
+                    <span className="text-gray-500">メール</span>
+                    <span className="text-gray-900 truncate">{profile.email}</span>
+                    <span className="text-gray-500">ステータス</span>
+                    <span>{statusBadge(profile.is_active)}</span>
+                    <span className="text-gray-500">最終ログイン</span>
+                    <span className="text-gray-900">{formatDate(profile.last_login_at)}</span>
+                  </div>
+                  {canManage && profile.id !== userId && profile.role !== 'owner' && (
+                    <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 mt-3">
+                      <button
+                        className={`text-xs font-medium px-3 py-1 rounded-md transition-colors ${
+                          profile.is_active
+                            ? 'text-red-600 hover:bg-red-50'
+                            : 'text-green-600 hover:bg-green-50'
+                        }`}
+                        onClick={() => handleToggleActive(profile)}
+                      >
+                        {profile.is_active ? '無効にする' : '有効にする'}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+            {/* Desktop table view */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
