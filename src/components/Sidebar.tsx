@@ -10,7 +10,9 @@ import {
   ClipboardList,
   BarChart3,
   Truck,
+  User,
   Users,
+  Building2,
   CreditCard,
   LogOut,
   X,
@@ -32,6 +34,8 @@ const navItems = [
   { label: '原価分析', icon: BarChart3, href: '/analysis' },
   { label: '業者管理', icon: Truck, href: '/suppliers' },
   { label: 'アカウント', icon: Users, href: '/accounts' },
+  { label: 'プロフィール', icon: User, href: '/profile' },
+  { label: '組織設定', icon: Building2, href: '/settings' },
   { label: '料金プラン', icon: CreditCard, href: '/billing' },
 ]
 
@@ -47,22 +51,9 @@ export default function Sidebar({ orgName = 'マイ店舗', isOpen, onClose }: S
 
   return (
     <>
-      {/* Mobile overlay */}
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-          onClick={onClose}
-        />
-      )}
-
-      {/* Sidebar */}
+      {/* Sidebar - desktop only */}
       <aside
-        className={`
-          fixed top-0 left-0 z-50 h-full w-[260px] bg-white border-r border-gray-200
-          flex flex-col transition-transform duration-300 ease-in-out
-          lg:translate-x-0
-          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
-        `}
+        className="hidden lg:flex fixed top-0 left-0 z-50 h-full w-[260px] bg-white border-r border-gray-200 flex-col"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100">
@@ -77,13 +68,6 @@ export default function Sidebar({ orgName = 'マイ店舗', isOpen, onClose }: S
               <p className="text-xs text-gray-500">RecipeCost</p>
             </div>
           </div>
-          <button
-            onClick={onClose}
-            className="lg:hidden p-1 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
-            aria-label="サイドバーを閉じる"
-          >
-            <X size={20} />
-          </button>
         </div>
 
         {/* Navigation */}

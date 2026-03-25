@@ -3,6 +3,7 @@
 import { useState, useCallback } from 'react'
 import Sidebar from '@/components/Sidebar'
 import TopBar from '@/components/TopBar'
+import BottomNav from '@/components/BottomNav'
 
 type AppLayoutProps = {
   children: React.ReactNode
@@ -36,8 +37,10 @@ export default function AppLayout({
           {actions}
         </TopBar>
 
-        <main className="flex-1 p-4 sm:p-6">{children}</main>
+        <main className="flex-1 p-4 sm:p-6 pb-20 lg:pb-6">{children}</main>
       </div>
+
+      <BottomNav />
     </div>
   )
 }
