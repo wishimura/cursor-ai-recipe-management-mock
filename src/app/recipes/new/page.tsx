@@ -483,7 +483,7 @@ export default function NewRecipePage() {
         {/* Cost summary */}
         <div className="card p-6 mb-6">
           <h2 className="text-lg font-semibold text-gray-900 mb-4">原価サマリー</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-gray-50 rounded-lg p-4 text-center">
               <p className="text-sm text-gray-500 mb-1">原価合計</p>
               <p className="text-2xl font-bold text-gray-900">

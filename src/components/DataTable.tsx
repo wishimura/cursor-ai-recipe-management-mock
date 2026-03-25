@@ -13,6 +13,7 @@ type DataTableProps<T> = {
   data: T[]
   onRowClick?: (item: T) => void
   emptyMessage?: string
+  mobileCardRenderer?: (row: T, index: number) => ReactNode
 }
 
 export default function DataTable<T extends Record<string, unknown>>({
@@ -20,6 +21,7 @@ export default function DataTable<T extends Record<string, unknown>>({
   data,
   onRowClick,
   emptyMessage = 'データがありません',
+  mobileCardRenderer,
 }: DataTableProps<T>) {
   if (data.length === 0) {
     return (
@@ -39,6 +41,52 @@ export default function DataTable<T extends Record<string, unknown>>({
         </svg>
         <p className="mt-3 text-sm text-gray-500">{emptyMessage}</p>
       </div>
+    )
+  }
+
+  if (mobileCardRenderer) {
+    return (
+      <>
+        {/* Mobile card view */}
+        <div className="sm:hidden space-y-3 p-4">
+          {data.map((item, idx) => mobileCardRenderer(item, idx))}
+        </div>
+        {/* Desktop table view */}
+        <div className="hidden sm:block overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                {columns.map((col) => (
+                  <th key={col.key} className="table-header">
+                    {col.label}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {data.map((item, idx) => (
+                <tr
+                  key={(item.id as string | number) ?? idx}
+                  onClick={onRowClick ? () => onRowClick(item) : undefined}
+                  className={`
+                    ${onRowClick ? 'cursor-pointer' : ''}
+                    hover:bg-gray-50 transition-colors
+                    ${idx % 2 === 1 ? 'bg-gray-50/50' : ''}
+                  `}
+                >
+                  {columns.map((col) => (
+                    <td key={col.key} className="table-cell whitespace-nowrap">
+                      {col.render
+                        ? col.render(item)
+                        : (item[col.key] as ReactNode) ?? '-'}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </>
     )
   }
 

@@ -274,6 +274,50 @@ export default function IngredientsPage() {
                 data={filtered}
                 onRowClick={(item) => router.push(`/ingredients/${item.id}`)}
                 emptyMessage="食材が登録されていません。「食材を追加」から最初の食材を登録しましょう。"
+                mobileCardRenderer={(item, index) => (
+                  <div
+                    key={item.id ?? index}
+                    className="bg-white rounded-lg border border-gray-200 p-4"
+                    onClick={() => router.push(`/ingredients/${item.id}`)}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <p className="font-bold text-gray-900">{item.name}</p>
+                        <p className="text-sm text-gray-500">{item.supplier?.name ?? '-'}</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm mt-3">
+                      <span className="text-gray-500">規格</span>
+                      <span className="text-gray-900">{item.specification ?? '-'}</span>
+                      <span className="text-gray-500">単位</span>
+                      <span className="text-gray-900">{item.unit ?? '-'}</span>
+                      <span className="text-gray-500">仕入値</span>
+                      <span className="text-gray-900 font-medium">{formatPrice(item.purchase_price)}</span>
+                      <span className="text-gray-500">g単価</span>
+                      <span className="text-primary-600 font-medium">{formatCostUnit(item.unit_cost, item.cost_unit)}</span>
+                    </div>
+                    <div className="flex justify-end gap-2 pt-3 border-t border-gray-100 mt-3">
+                      <Link
+                        href={`/ingredients/${item.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="p-1.5 rounded-md text-gray-400 hover:text-primary-600 hover:bg-primary-50 transition-colors"
+                        title="編集"
+                      >
+                        <Pencil size={16} />
+                      </Link>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setDeleteTarget(item)
+                        }}
+                        className="p-1.5 rounded-md text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                        title="削除"
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                )}
               />
               {filtered.length > 0 && (
                 <div className="px-4 py-3 border-t border-gray-100 bg-gray-50/50">

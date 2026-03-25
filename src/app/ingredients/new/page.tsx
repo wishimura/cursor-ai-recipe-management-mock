@@ -208,7 +208,7 @@ export default function NewIngredientPage() {
             </div>
 
             {/* Specification and Unit */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="specification" className="label">
                   規格
@@ -273,7 +273,7 @@ export default function NewIngredientPage() {
             </div>
 
             {/* Unit cost and cost unit */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="unit_cost" className="label">
                   単位原価（円）

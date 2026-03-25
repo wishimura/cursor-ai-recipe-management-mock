@@ -271,6 +271,16 @@ export default function LoginPage() {
                 minLength={mode === 'signup' ? 6 : undefined}
                 disabled={loading}
               />
+              {mode === 'login' && (
+                <div className="mt-1 text-right">
+                  <a
+                    href="/reset-password"
+                    className="text-sm text-primary-600 hover:text-primary-700 hover:underline"
+                  >
+                    パスワードをお忘れですか？
+                  </a>
+                </div>
+              )}
             </div>
 
             <button

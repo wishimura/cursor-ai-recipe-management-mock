@@ -307,7 +307,48 @@ export default function InventoryPage() {
                 : '仕込みレシピが登録されていません'}
             </div>
           ) : (
-            <div className="overflow-x-auto">
+            <>
+            {/* Mobile card view */}
+            <div className="sm:hidden space-y-3 p-4">
+              {filteredRows.map((row) => {
+                const globalIdx = rows.findIndex(
+                  (r) =>
+                    r.item_type === row.item_type &&
+                    r.ingredient_id === row.ingredient_id &&
+                    r.prep_recipe_id === row.prep_recipe_id
+                )
+                return (
+                  <div
+                    key={`${row.item_type}-${row.ingredient_id || row.prep_recipe_id}`}
+                    className="bg-white rounded-lg border border-gray-200 p-4"
+                  >
+                    <div className="flex justify-between items-start">
+                      <p className="font-bold text-gray-900">{row.item_name}</p>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 text-sm mt-3">
+                      <span className="text-gray-500">単位原価</span>
+                      <span className="text-gray-900">¥{row.unit_cost.toLocaleString('ja-JP', { minimumFractionDigits: 2 })}</span>
+                      <span className="text-gray-500">数量</span>
+                      <div>
+                        <input
+                          type="number"
+                          className="input-field text-right w-full"
+                          min="0"
+                          step="0.1"
+                          value={row.quantity || ''}
+                          onChange={(e) => handleQuantityChange(globalIdx, e.target.value)}
+                          placeholder="0"
+                        />
+                      </div>
+                      <span className="text-gray-500">金額</span>
+                      <span className="text-gray-900 font-medium">¥{row.total_value.toLocaleString('ja-JP', { minimumFractionDigits: 0 })}</span>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+            {/* Desktop table view */}
+            <div className="hidden sm:block overflow-x-auto">
               <table className="w-full">
                 <thead className="bg-gray-50 border-b border-gray-200">
                   <tr>
@@ -318,8 +359,7 @@ export default function InventoryPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-100">
-                  {filteredRows.map((row, idx) => {
-                    // Find the actual index in the full rows array
+                  {filteredRows.map((row) => {
                     const globalIdx = rows.findIndex(
                       (r) =>
                         r.item_type === row.item_type &&
@@ -352,6 +392,7 @@ export default function InventoryPage() {
                 </tbody>
               </table>
             </div>
+            </>
           )}
         </div>
 
