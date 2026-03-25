@@ -16,7 +16,7 @@ function generateSlug(name: string): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { user_id, full_name, org_name } = body
+    const { user_id, email, full_name, org_name } = body
 
     if (!user_id || !full_name || !org_name) {
       return NextResponse.json(
@@ -27,11 +27,28 @@ export async function POST(request: NextRequest) {
 
     const supabase = createServiceRoleClient()
 
-    // Generate a unique slug for the organization
+    // Check if the DB trigger already created the profile
+    const { data: existingProfile } = await supabase
+      .from('profiles')
+      .select('id, org_id')
+      .eq('id', user_id)
+      .single()
+
+    if (existingProfile) {
+      // Trigger already handled it — update org name if needed
+      if (org_name) {
+        await supabase
+          .from('organizations')
+          .update({ name: org_name })
+          .eq('id', existingProfile.org_id)
+      }
+      return NextResponse.json({ success: true, org_id: existingProfile.org_id })
+    }
+
+    // Trigger didn't fire — create manually
     const baseSlug = generateSlug(org_name)
     const slug = `${baseSlug}-${Date.now().toString(36)}`
 
-    // Create organization
     const { data: org, error: orgError } = await supabase
       .from('organizations')
       .insert({
@@ -49,19 +66,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create profile linked to user and organization
     const { error: profileError } = await supabase
       .from('profiles')
       .insert({
         id: user_id,
-        organization_id: org.id,
+        org_id: org.id,
+        email: email || '',
         full_name,
         role: 'owner',
       })
 
     if (profileError) {
       console.error('Profile creation failed:', profileError)
-      // Attempt to clean up the created organization
       await supabase.from('organizations').delete().eq('id', org.id)
       return NextResponse.json(
         { error: 'プロフィールの作成に失敗しました' },
