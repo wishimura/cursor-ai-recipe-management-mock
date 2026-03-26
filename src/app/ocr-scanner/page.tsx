@@ -9,10 +9,16 @@ import AppLayout from '@/components/AppLayout'
 
 async function pdfToImage(file: File): Promise<string> {
   const pdfjsLib = await import('pdfjs-dist')
-  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
+  // Disable worker to avoid CDN/CORS issues in production
+  pdfjsLib.GlobalWorkerOptions.workerSrc = ''
 
   const arrayBuffer = await file.arrayBuffer()
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+  const pdf = await pdfjsLib.getDocument({
+    data: arrayBuffer,
+    useWorkerFetch: false,
+    isEvalSupported: false,
+    useSystemFonts: true,
+  }).promise
   const page = await pdf.getPage(1)
 
   const scale = 2.0
@@ -169,8 +175,13 @@ export default function OcrScannerPage() {
         }
         reader.readAsDataURL(file)
       }
-    } catch {
-      setErrorMessage('ファイルの読み込みに失敗しました。もう一度お試しください。')
+    } catch (err) {
+      console.error('File processing error:', err)
+      setErrorMessage(
+        file.type === 'application/pdf'
+          ? 'PDFの読み込みに失敗しました。画像形式（JPG, PNG）に変換してお試しください。'
+          : 'ファイルの読み込みに失敗しました。もう一度お試しください。'
+      )
     }
   }, [])
 
