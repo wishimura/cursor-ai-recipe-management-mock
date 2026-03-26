@@ -16,6 +16,7 @@ import {
   User,
   Building2,
   CreditCard,
+  ScanLine,
 } from 'lucide-react'
 
 const tabItems = [
@@ -33,6 +34,7 @@ const moreMenuItems = [
   { label: 'プロフィール', icon: User, href: '/profile' },
   { label: '組織設定', icon: Building2, href: '/settings' },
   { label: '料金プラン', icon: CreditCard, href: '/billing' },
+  { label: '納品書スキャン', icon: ScanLine, href: '/ocr-scanner' },
 ]
 
 export default function BottomNav() {
