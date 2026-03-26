@@ -206,21 +206,20 @@ CREATE POLICY "Owners can update their organization"
 -- ---------- profiles ----------
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Users can view profiles in their organization"
+-- NOTE: profiles policies must NOT use user_org_id() or subqueries on profiles
+-- to avoid infinite recursion. Use auth.uid() directly.
+CREATE POLICY "profiles_select_own"
     ON profiles FOR SELECT
-    USING (org_id = public.user_org_id());
+    USING (id = auth.uid());
 
-CREATE POLICY "Users can update their own profile"
+CREATE POLICY "profiles_update_own"
     ON profiles FOR UPDATE
     USING (id = auth.uid())
     WITH CHECK (id = auth.uid());
 
-CREATE POLICY "Admins and owners can manage profiles in their org"
-    ON profiles FOR ALL
-    USING (
-        org_id = public.user_org_id()
-        AND (SELECT role FROM profiles WHERE id = auth.uid()) IN ('owner', 'admin')
-    );
+CREATE POLICY "profiles_insert_own"
+    ON profiles FOR INSERT
+    WITH CHECK (id = auth.uid());
 
 -- ---------- suppliers ----------
 ALTER TABLE suppliers ENABLE ROW LEVEL SECURITY;
