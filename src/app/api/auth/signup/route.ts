@@ -25,10 +25,19 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const supabase = createServiceRoleClient()
+    let supabase
+    try {
+      supabase = createServiceRoleClient()
+    } catch (e) {
+      console.error('Supabase client creation failed:', e)
+      return NextResponse.json(
+        { error: 'データベース接続に失敗しました。管理者にお問い合わせください。' },
+        { status: 500 }
+      )
+    }
 
     // Check if the DB trigger already created the profile
-    const { data: existingProfile } = await supabase
+    const { data: existingProfile, error: profileCheckError } = await supabase
       .from('profiles')
       .select('id, org_id')
       .eq('id', user_id)
@@ -43,6 +52,15 @@ export async function POST(request: NextRequest) {
           .eq('id', existingProfile.org_id)
       }
       return NextResponse.json({ success: true, org_id: existingProfile.org_id })
+    }
+
+    // If table doesn't exist, return clear error
+    if (profileCheckError && profileCheckError.message?.includes('relation') && profileCheckError.message?.includes('does not exist')) {
+      console.error('Tables not created:', profileCheckError)
+      return NextResponse.json(
+        { error: 'データベースのテーブルが未作成です。Supabaseの SQL Editor でスキーマを実行してください。' },
+        { status: 500 }
+      )
     }
 
     // Trigger didn't fire — create manually
@@ -61,7 +79,7 @@ export async function POST(request: NextRequest) {
     if (orgError) {
       console.error('Organization creation failed:', orgError)
       return NextResponse.json(
-        { error: '組織の作成に失敗しました' },
+        { error: '組織の作成に失敗しました。しばらく経ってからお試しください。' },
         { status: 500 }
       )
     }
@@ -80,7 +98,7 @@ export async function POST(request: NextRequest) {
       console.error('Profile creation failed:', profileError)
       await supabase.from('organizations').delete().eq('id', org.id)
       return NextResponse.json(
-        { error: 'プロフィールの作成に失敗しました' },
+        { error: 'プロフィールの作成に失敗しました。しばらく経ってからお試しください。' },
         { status: 500 }
       )
     }

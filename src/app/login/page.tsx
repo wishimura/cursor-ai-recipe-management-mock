@@ -107,14 +107,20 @@ export default function LoginPage() {
         })
 
         if (!res.ok) {
-          const body = await res.json()
-          throw new Error(body.error || 'プロファイルの作成に失敗しました')
+          let errorMsg = 'プロフィールの作成に失敗しました'
+          try {
+            const body = await res.json()
+            errorMsg = body.error || errorMsg
+          } catch {
+            // レスポンスがJSONでない場合
+          }
+          throw new Error(errorMsg)
         }
       } catch (err) {
         setError(
           err instanceof Error
             ? err.message
-            : '組織の作成中にエラーが発生しました'
+            : '組織の作成中にエラーが発生しました。しばらく経ってからお試しください。'
         )
         setLoading(false)
         return
