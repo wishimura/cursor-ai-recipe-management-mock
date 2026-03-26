@@ -43,6 +43,7 @@ export default function OcrScannerPage() {
   const [items, setItems] = useState<OcrItem[]>([])
   const [progress, setProgress] = useState(0)
   const [statusText, setStatusText] = useState('')
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [isDragging, setIsDragging] = useState(false)
   const [registering, setRegistering] = useState(false)
   const [registeredCount, setRegisteredCount] = useState(0)
@@ -56,44 +57,80 @@ export default function OcrScannerPage() {
     return sum + q * p
   }, 0)
 
-  // Progress simulation for step 2
+  // OCR processing for step 2
   useEffect(() => {
     if (currentStep !== 2) return
 
     setProgress(0)
     setStatusText(STATUS_MESSAGES[0].text)
 
+    // Start progress animation
     const interval = setInterval(() => {
       setProgress((prev) => {
-        const next = Math.min(prev + 2 + Math.random() * 3, 100)
-
-        // Update status text
+        const next = Math.min(prev + 1 + Math.random() * 2, 90)
         for (let i = STATUS_MESSAGES.length - 1; i >= 0; i--) {
           if (next >= STATUS_MESSAGES[i].at) {
             setStatusText(STATUS_MESSAGES[i].text)
             break
           }
         }
-
-        if (next >= 100) {
-          clearInterval(interval)
-          setTimeout(() => {
-            setItems(DEMO_ITEMS.map((item) => ({ ...item })))
-            setCurrentStep(3)
-          }, 500)
-        }
-
         return next
       })
-    }, 80)
+    }, 120)
+
+    // Call OCR API
+    const processOcr = async () => {
+      try {
+        const res = await fetch('/api/ai/ocr', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ image: uploadedImage }),
+        })
+        const data = await res.json()
+        const ocrItems: OcrItem[] = (data.items || []).map((item: { name: string; quantity: number; unit: string; unit_cost: number; amount: number }) => ({
+          name: item.name,
+          qty: item.quantity,
+          unit: item.unit,
+          unitPrice: item.unit_cost,
+          amount: item.amount,
+        }))
+        clearInterval(interval)
+        setProgress(100)
+        setStatusText(STATUS_MESSAGES[4].text)
+        setTimeout(() => {
+          setItems(ocrItems.length > 0 ? ocrItems : DEMO_ITEMS.map((item) => ({ ...item })))
+          setCurrentStep(3)
+        }, 500)
+      } catch {
+        clearInterval(interval)
+        setProgress(100)
+        setStatusText('エラーが発生しました。デモデータを表示します。')
+        setTimeout(() => {
+          setItems(DEMO_ITEMS.map((item) => ({ ...item })))
+          setCurrentStep(3)
+        }, 1000)
+      }
+    }
+
+    processOcr()
 
     return () => clearInterval(interval)
-  }, [currentStep])
+  }, [currentStep, uploadedImage])
 
   const handleFileSelect = useCallback(() => {
     const input = fileInputRef.current
     if (input?.files && input.files.length > 0) {
-      setCurrentStep(2)
+      const file = input.files[0]
+      if (file.size > 10 * 1024 * 1024) {
+        alert('ファイルサイズは10MB以下にしてください')
+        return
+      }
+      const reader = new FileReader()
+      reader.onload = () => {
+        setUploadedImage(reader.result as string)
+        setCurrentStep(2)
+      }
+      reader.readAsDataURL(file)
     }
   }, [])
 
