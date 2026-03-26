@@ -45,7 +45,7 @@ export default function UpdatePasswordPage() {
     setLoading(false)
 
     setTimeout(() => {
-      router.push('/dashboard')
+      window.location.href = '/dashboard'
     }, 2000)
   }
 
