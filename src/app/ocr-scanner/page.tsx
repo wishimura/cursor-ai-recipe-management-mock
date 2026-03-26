@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Camera, Upload, Check, ArrowLeft, Plus, Trash2, ScanLine } from 'lucide-react'
+import { Camera, Upload, Check, ArrowLeft, Plus, Trash2, ScanLine, AlertCircle } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import AppLayout from '@/components/AppLayout'
 
@@ -48,6 +48,7 @@ export default function OcrScannerPage() {
   const [registering, setRegistering] = useState(false)
   const [registeredCount, setRegisteredCount] = useState(0)
   const [registeredTotal, setRegisteredTotal] = useState(0)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   // Compute summary
   const itemCount = items.filter((item) => String(item.name).trim() !== '').length
@@ -117,22 +118,37 @@ export default function OcrScannerPage() {
     return () => clearInterval(interval)
   }, [currentStep, uploadedImage])
 
+  const processFile = useCallback((file: File) => {
+    setErrorMessage(null)
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp']
+    if (!validTypes.includes(file.type)) {
+      setErrorMessage('対応していないファイル形式です。JPG, PNG, WebP形式の画像を選択してください。')
+      return
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setErrorMessage('ファイルサイズが10MBを超えています。より小さいファイルを選択してください。')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.onload = () => {
+      setUploadedImage(reader.result as string)
+      setCurrentStep(2)
+    }
+    reader.onerror = () => {
+      setErrorMessage('ファイルの読み込みに失敗しました。もう一度お試しください。')
+    }
+    reader.readAsDataURL(file)
+  }, [])
+
   const handleFileSelect = useCallback(() => {
     const input = fileInputRef.current
     if (input?.files && input.files.length > 0) {
-      const file = input.files[0]
-      if (file.size > 10 * 1024 * 1024) {
-        alert('ファイルサイズは10MB以下にしてください')
-        return
-      }
-      const reader = new FileReader()
-      reader.onload = () => {
-        setUploadedImage(reader.result as string)
-        setCurrentStep(2)
-      }
-      reader.readAsDataURL(file)
+      processFile(input.files[0])
     }
-  }, [])
+  }, [processFile])
 
   const triggerFileInput = useCallback((mode: 'file' | 'camera') => {
     const input = fileInputRef.current
@@ -149,9 +165,9 @@ export default function OcrScannerPage() {
     e.preventDefault()
     setIsDragging(false)
     if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      setCurrentStep(2)
+      processFile(e.dataTransfer.files[0])
     }
-  }, [])
+  }, [processFile])
 
   const handleDragOver = useCallback((e: React.DragEvent) => {
     e.preventDefault()
@@ -195,6 +211,8 @@ export default function OcrScannerPage() {
     setItems([])
     setProgress(0)
     setStatusText('')
+    setUploadedImage(null)
+    setErrorMessage(null)
     if (fileInputRef.current) fileInputRef.current.value = ''
   }, [])
 
@@ -306,6 +324,14 @@ export default function OcrScannerPage() {
                 AIが自動で食材名・数量・金額を読み取ります。
               </p>
 
+              {/* Error message */}
+              {errorMessage && (
+                <div className="mb-4 flex items-start gap-2 p-3 rounded-lg bg-red-50 text-red-700 text-sm">
+                  <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
+                  <span>{errorMessage}</span>
+                </div>
+              )}
+
               {/* Drop zone */}
               <div
                 onClick={() => triggerFileInput('file')}
@@ -323,7 +349,7 @@ export default function OcrScannerPage() {
                   タップして画像を選択
                 </p>
                 <p className="text-sm text-gray-400 mt-1">
-                  JPG, PNG対応 / 最大10MB
+                  JPG, PNG, WebP対応 / 最大10MB
                 </p>
                 <p className="text-xs text-gray-400 mt-2">
                   ドラッグ＆ドロップも可能
@@ -333,7 +359,7 @@ export default function OcrScannerPage() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/jpeg,image/png"
+                accept="image/jpeg,image/png,image/webp"
                 className="hidden"
                 onChange={handleFileSelect}
               />
@@ -353,7 +379,7 @@ export default function OcrScannerPage() {
                 <p className="text-sm text-gray-500 mb-3">カメラや画像がない場合</p>
                 <button
                   type="button"
-                  onClick={() => setCurrentStep(2)}
+                  onClick={() => { setUploadedImage(null); setCurrentStep(2) }}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-white font-medium text-sm transition-all"
                   style={{
                     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -385,6 +411,12 @@ export default function OcrScannerPage() {
                 />
               </div>
               <p className="text-sm text-gray-400 mt-2">{Math.round(progress)}%</p>
+
+              {uploadedImage && (
+                <p className="text-xs text-gray-400 mt-4">
+                  Claude Vision APIで画像を解析中です
+                </p>
+              )}
             </div>
           </div>
         )}
