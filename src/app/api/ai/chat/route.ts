@@ -94,10 +94,16 @@ function buildSmartResponse(
     const priceMatch = message.match(/(\d+)\s*円/)
     const qtyMatch = message.match(/(\d+)\s*g/)
 
+    // Calculate actual cost from recipe_items
+    const actualCost = items.length > 0
+      ? Math.round(items.reduce((sum, i) => sum + i.cost, 0))
+      : menuMatch.cost
+    const actualRate = ((actualCost / menuMatch.selling_price) * 100).toFixed(1)
+
     let response = `**${menuMatch.name}** の原価分析です：\n\n`
     response += `- 売価: ¥${menuMatch.selling_price.toLocaleString()}\n`
-    response += `- 現在の原価: ¥${menuMatch.cost.toLocaleString()}\n`
-    response += `- 現在の原価率: ${menuMatch.cost_rate}%\n\n`
+    response += `- 現在の原価: ¥${actualCost.toLocaleString()}\n`
+    response += `- 現在の原価率: ${actualRate}%\n\n`
 
     if (items.length > 0) {
       response += `**材料内訳:**\n`
@@ -138,9 +144,9 @@ function buildSmartResponse(
         response += `**シミュレーション結果:**\n`
         response += `- ${itemInRecipe.name}の原価変更: ¥${Math.round(itemInRecipe.cost)} → ¥${Math.round(newItemCost)}\n`
         response += `- 新しい原価合計: ¥${newTotalCost.toLocaleString()}\n`
-        response += `- 新しい原価率: **${newCostRate}%**（現在${menuMatch.cost_rate}%）\n`
+        response += `- 新しい原価率: **${newCostRate}%**（現在${actualRate}%）\n`
 
-        const diff = parseFloat(newCostRate) - menuMatch.cost_rate
+        const diff = parseFloat(newCostRate) - parseFloat(actualRate)
         if (diff > 0) {
           response += `\n⚠️ 原価率が${diff.toFixed(1)}ポイント上昇します。`
           if (parseFloat(newCostRate) > 35) {
