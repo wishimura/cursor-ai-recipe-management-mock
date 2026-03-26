@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RecipeCost - HTMLモック</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8fafc; color: #1e293b; }
+    .container { max-width: 800px; margin: 0 auto; padding: 40px 20px; }
+    h1 { font-size: 28px; margin-bottom: 8px; }
+    .subtitle { color: #64748b; margin-bottom: 32px; }
+    .live-link { display: inline-block; background: #3b82f6; color: white; padding: 12px 24px; border-radius: 8px; text-decoration: none; margin-bottom: 32px; font-weight: 600; }
+    .live-link:hover { background: #2563eb; }
+    h2 { font-size: 18px; margin-bottom: 16px; color: #475569; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 32px; }
+    .card { background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; text-decoration: none; color: #1e293b; transition: box-shadow 0.15s; }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .card .label { font-weight: 600; margin-bottom: 4px; }
+    .card .desc { font-size: 13px; color: #64748b; }
+    .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 4px; background: #dbeafe; color: #1d4ed8; margin-left: 8px; }
+    .badge.ai { background: #f3e8ff; color: #7c3aed; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>RecipeCost HTMLモック</h1>
+    <p class="subtitle">飲食店向けレシピ原価管理SaaS のUIモック（静的HTML版）</p>
+    <a class="live-link" href="https://cursor-ai-recipe-management-mock.vercel.app" target="_blank">本番アプリ (Next.js版) を見る →</a>
+
+    <h2>ページ一覧</h2>
+    <div class="grid">
+      <a class="card" href="login.html">
+        <div class="label">ログイン</div>
+        <div class="desc">ログイン・新規登録画面</div>
+      </a>
+      <a class="card" href="recipe-list.html">
+        <div class="label">メニューレシピ一覧</div>
+        <div class="desc">レシピの管理・原価率表示</div>
+      </a>
+      <a class="card" href="recipe-add.html">
+        <div class="label">レシピ追加</div>
+        <div class="desc">新規レシピの登録フォーム</div>
+      </a>
+      <a class="card" href="recipe-edit.html">
+        <div class="label">レシピ編集</div>
+        <div class="desc">既存レシピの編集画面</div>
+      </a>
+      <a class="card" href="prep-recipe-list.html">
+        <div class="label">仕込みレシピ一覧</div>
+        <div class="desc">仕込みの管理</div>
+      </a>
+      <a class="card" href="prep-recipe-add.html">
+        <div class="label">仕込み追加</div>
+        <div class="desc">新規仕込みレシピ登録</div>
+      </a>
+      <a class="card" href="purchase-list.html">
+        <div class="label">仕入マスタ一覧</div>
+        <div class="desc">食材・仕入れの管理</div>
+      </a>
+      <a class="card" href="purchase-add.html">
+        <div class="label">仕入追加</div>
+        <div class="desc">新規食材の登録</div>
+      </a>
+      <a class="card" href="inventory.html">
+        <div class="label">棚卸</div>
+        <div class="desc">月次棚卸入力</div>
+      </a>
+      <a class="card" href="analysis.html">
+        <div class="label">原価分析</div>
+        <div class="desc">月次原価率・売上分析</div>
+      </a>
+      <a class="card" href="suppliers.html">
+        <div class="label">業者管理</div>
+        <div class="desc">仕入先の管理</div>
+      </a>
+      <a class="card" href="accounts.html">
+        <div class="label">アカウント管理</div>
+        <div class="desc">メンバー・権限管理</div>
+      </a>
+      <a class="card" href="ocr-scanner.html">
+        <div class="label">納品書スキャン <span class="badge ai">AI</span></div>
+        <div class="desc">OCR読取 → 食材マスタ登録</div>
+      </a>
+    </div>
+  </div>
+</body>
+</html>

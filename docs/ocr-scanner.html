@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>納品書スキャン - レシピ原価管理</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- サイドバー -->
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div>
+          <h2>&#x1F373; レシピ原価管理</h2>
+          <div class="sidebar-company">合同会社CitrusApp</div>
+        </div>
+        <button class="sidebar-close" onclick="toggleSidebar()">&#x2715;</button>
+      </div>
+      <div class="sidebar-nav">
+        <a href="purchase-list.html"><span class="nav-icon">&#x1F4E6;</span>仕入マスタ</a>
+        <a href="prep-recipe-list.html"><span class="nav-icon">&#x1F52A;</span>仕込みレシピ</a>
+        <a href="recipe-list.html"><span class="nav-icon">&#x1F371;</span>単品レシピ</a>
+        <a href="inventory.html"><span class="nav-icon">&#x1F4CB;</span>棚卸</a>
+        <a href="analysis.html"><span class="nav-icon">&#x1F4CA;</span>分析</a>
+        <a href="suppliers.html"><span class="nav-icon">&#x1F3E2;</span>業者管理</a>
+        <a href="accounts.html"><span class="nav-icon">&#x1F465;</span>アカウント管理</a>
+        <div class="nav-divider"></div>
+        <div class="nav-section-label">AI機能</div>
+        <a href="ocr-scanner.html" class="active"><span class="nav-icon">&#x1F4F8;</span>納品書スキャン</a>
+      </div>
+      <div class="sidebar-footer">
+        <div class="text-xs" style="margin-bottom: 6px; color: var(--gray-400);">&#x1F464; テスト 太郎</div>
+        <a href="login.html" style="color: var(--gray-400);">&#x1F6AA; ログアウト</a>
+      </div>
+    </nav>
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- メイン -->
+    <div class="main-content">
+      <div class="top-bar">
+        <button class="menu-toggle" onclick="toggleSidebar()">&#x2630;</button>
+        <span class="top-bar-title">納品書スキャン</span>
+      </div>
+
+      <div class="page-content">
+        <!-- ステップインジケーター -->
+        <div class="ocr-steps">
+          <div class="ocr-step active" id="ocrStepIndicator1">
+            <div class="ocr-step-number">1</div>
+            <div class="ocr-step-label">撮影・選択</div>
+          </div>
+          <div class="ocr-step-line"></div>
+          <div class="ocr-step" id="ocrStepIndicator2">
+            <div class="ocr-step-number">2</div>
+            <div class="ocr-step-label">読み取り中</div>
+          </div>
+          <div class="ocr-step-line"></div>
+          <div class="ocr-step" id="ocrStepIndicator3">
+            <div class="ocr-step-number">3</div>
+            <div class="ocr-step-label">確認・編集</div>
+          </div>
+          <div class="ocr-step-line"></div>
+          <div class="ocr-step" id="ocrStepIndicator4">
+            <div class="ocr-step-number">4</div>
+            <div class="ocr-step-label">完了</div>
+          </div>
+        </div>
+
+        <!-- ステップ1: 撮影・選択 -->
+        <div id="ocr-step1">
+          <div class="card">
+            <div class="card-body">
+              <h3 style="margin-bottom: 8px;">納品書を読み取る</h3>
+              <p class="text-sm text-muted" style="margin-bottom: 16px;">
+                納品書の写真を撮影するか、画像ファイルを選択してください。<br>
+                AIが自動で食材名・数量・金額を読み取ります。
+              </p>
+
+              <div class="ocr-upload-area" onclick="triggerFileInput('file')">
+                <div class="ocr-upload-icon">&#x1F4F7;</div>
+                <div class="ocr-upload-text">タップして画像を選択</div>
+                <div class="ocr-upload-hint">JPG, PNG対応 / 最大10MB</div>
+              </div>
+
+              <input type="file" id="ocrFileInput" accept="image/*" style="display: none;" onchange="onFileSelected()">
+
+              <div class="btn-group mt-16" style="gap: 8px;">
+                <button type="button" class="btn btn-outline btn-block" onclick="triggerFileInput('camera')">
+                  &#x1F4F8; カメラで撮影
+                </button>
+              </div>
+
+              <div style="text-align: center; margin-top: 24px; padding-top: 16px; border-top: 1px solid var(--gray-200);">
+                <p class="text-sm text-muted" style="margin-bottom: 8px;">カメラや画像がない場合</p>
+                <button type="button" class="btn btn-primary" onclick="startMockOCR()" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                  &#x2728; デモデータで試す
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ステップ2: 読み取り中 -->
+        <div id="ocr-step2" style="display: none;">
+          <div class="card">
+            <div class="card-body" style="text-align: center; padding: 40px 20px;">
+              <div class="ocr-processing-animation">
+                <div class="ocr-scan-line"></div>
+                <div style="font-size: 3rem; margin-bottom: 8px;">&#x1F4C4;</div>
+              </div>
+
+              <h3 style="margin: 16px 0 8px;">読み取り中...</h3>
+              <p class="text-sm text-muted" id="ocrProcessingStatus">画像を解析しています...</p>
+
+              <div class="ocr-progress-bar" style="margin-top: 24px;">
+                <div class="ocr-progress-fill" id="ocrProgressFill" style="width: 0%;"></div>
+              </div>
+              <div class="text-sm text-muted" style="margin-top: 8px;">
+                <span id="ocrProgressPercent">0%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ステップ3: 確認・編集 -->
+        <div id="ocr-step3" style="display: none;">
+          <div class="card mb-16">
+            <div class="card-body">
+              <div class="d-flex justify-between items-center mb-8">
+                <h3>読み取り結果</h3>
+                <span class="badge badge-success">AI読み取り完了</span>
+              </div>
+
+              <p class="text-sm text-muted mb-16">内容を確認・修正して「登録する」を押してください。</p>
+
+              <!-- 基本情報 -->
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="text-sm">日付</label>
+                  <input type="date" class="form-control" id="ocrDate">
+                </div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="text-sm">業者名</label>
+                  <input type="text" class="form-control" id="ocrSupplier">
+                </div>
+              </div>
+
+              <!-- 明細テーブル -->
+              <div style="overflow-x: auto;">
+                <table class="data-table" style="min-width: 500px;">
+                  <thead>
+                    <tr>
+                      <th>品名</th>
+                      <th class="text-right">数量</th>
+                      <th>単位</th>
+                      <th class="text-right">単価</th>
+                      <th class="text-right">金額</th>
+                      <th style="width: 30px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="ocrItemsBody">
+                    <!-- JS で動的生成 -->
+                  </tbody>
+                </table>
+              </div>
+
+              <button type="button" class="btn btn-outline btn-sm mt-8" onclick="addOCRRow()">+ 行を追加</button>
+
+              <!-- サマリー -->
+              <div class="cost-summary" style="margin-top: 16px;">
+                <div class="cost-summary-row">
+                  <span>品目数</span>
+                  <span id="ocrItemCount">0件</span>
+                </div>
+                <div class="cost-summary-row total">
+                  <span>合計金額</span>
+                  <span id="ocrTotalAmount">0 円</span>
+                </div>
+              </div>
+
+              <div class="btn-group mt-16" style="gap: 8px;">
+                <button type="button" class="btn btn-outline" onclick="resetOCR()">やり直す</button>
+                <button type="button" class="btn btn-primary btn-block" onclick="registerOCRData()">
+                  &#x2705; 仕入マスタに登録する
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ステップ4: 完了 -->
+        <div id="ocr-step4" style="display: none;">
+          <div class="card">
+            <div class="card-body" style="text-align: center; padding: 40px 20px;">
+              <div style="font-size: 4rem; margin-bottom: 16px;">&#x1F389;</div>
+              <h3 style="margin-bottom: 8px;">登録が完了しました！</h3>
+              <p class="text-sm text-muted" style="margin-bottom: 24px;">
+                納品書データが仕入マスタに反映されました。
+              </p>
+
+              <div class="cost-summary" style="max-width: 300px; margin: 0 auto 24px;">
+                <div class="cost-summary-row">
+                  <span>登録品目数</span>
+                  <span><span id="ocrRegisteredCount">0</span> 件</span>
+                </div>
+                <div class="cost-summary-row total">
+                  <span>合計金額</span>
+                  <span id="ocrRegisteredTotal">¥0</span>
+                </div>
+              </div>
+
+              <div class="btn-group" style="gap: 8px; justify-content: center;">
+                <button type="button" class="btn btn-outline" onclick="resetOCR()">
+                  &#x1F4F8; 続けてスキャン
+                </button>
+                <a href="purchase-list.html" class="btn btn-primary">
+                  &#x1F4E6; 仕入マスタを確認
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="js/common.js"></script>
+  <script src="js/ocr-scanner.js"></script>
+  <script src="js/chat.js"></script>
+</body>
+</html>
