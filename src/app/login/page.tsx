@@ -39,7 +39,7 @@ export default function LoginPage() {
       return
     }
 
-    router.push('/dashboard')
+    window.location.href = '/dashboard'
   }
 
   const handleSignup = async () => {
@@ -110,7 +110,7 @@ export default function LoginPage() {
       return
     }
 
-    router.push('/dashboard')
+    window.location.href = '/dashboard'
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

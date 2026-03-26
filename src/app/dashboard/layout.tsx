@@ -23,11 +23,7 @@ export default async function DashboardLayout({
     .eq('id', user.id)
     .single()
 
-  if (!profile) {
-    redirect('/login')
-  }
-
-  const orgName = profile.organization?.name ?? 'マイ店舗'
+  const orgName = profile?.organization?.name ?? 'マイ店舗'
 
   return (
     <AppLayout title="ダッシュボード" orgName={orgName}>
