@@ -4,6 +4,7 @@ import { useState, useCallback } from 'react'
 import Sidebar from '@/components/Sidebar'
 import TopBar from '@/components/TopBar'
 import BottomNav from '@/components/BottomNav'
+import ChatAssistant from '@/components/ChatAssistant'
 
 type AppLayoutProps = {
   children: React.ReactNode
@@ -41,6 +42,7 @@ export default function AppLayout({
       </div>
 
       <BottomNav />
+      <ChatAssistant />
     </div>
   )
 }
