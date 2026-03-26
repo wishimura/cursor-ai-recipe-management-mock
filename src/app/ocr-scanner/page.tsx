@@ -22,7 +22,8 @@ async function pdfToImage(file: File): Promise<string> {
   canvas.height = viewport.height
   const ctx = canvas.getContext('2d')!
 
-  await page.render({ canvasContext: ctx, viewport }).promise
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  await (page as any).render({ canvasContext: ctx, viewport }).promise
   return canvas.toDataURL('image/png')
 }
 
