@@ -3,9 +3,28 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { Camera, Upload, Check, ArrowLeft, Plus, Trash2, ScanLine, AlertCircle } from 'lucide-react'
+import { Camera, Upload, Check, ArrowLeft, Plus, Trash2, ScanLine, AlertCircle, FileText } from 'lucide-react'
 import { createClient } from '@/lib/supabase/client'
 import AppLayout from '@/components/AppLayout'
+
+async function pdfToImage(file: File): Promise<string> {
+  const pdfjsLib = await import('pdfjs-dist')
+  pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`
+
+  const arrayBuffer = await file.arrayBuffer()
+  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+  const page = await pdf.getPage(1)
+
+  const scale = 2.0
+  const viewport = page.getViewport({ scale })
+  const canvas = document.createElement('canvas')
+  canvas.width = viewport.width
+  canvas.height = viewport.height
+  const ctx = canvas.getContext('2d')!
+
+  await page.render({ canvasContext: ctx, viewport }).promise
+  return canvas.toDataURL('image/png')
+}
 
 type OcrItem = {
   name: string
@@ -118,29 +137,40 @@ export default function OcrScannerPage() {
     return () => clearInterval(interval)
   }, [currentStep, uploadedImage])
 
-  const processFile = useCallback((file: File) => {
+  const processFile = useCallback(async (file: File) => {
     setErrorMessage(null)
 
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp']
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'application/pdf']
     if (!validTypes.includes(file.type)) {
-      setErrorMessage('対応していないファイル形式です。JPG, PNG, WebP形式の画像を選択してください。')
+      setErrorMessage('対応していないファイル形式です。JPG, PNG, WebP, PDF形式のファイルを選択してください。')
       return
     }
 
-    if (file.size > 10 * 1024 * 1024) {
-      setErrorMessage('ファイルサイズが10MBを超えています。より小さいファイルを選択してください。')
+    if (file.size > 20 * 1024 * 1024) {
+      setErrorMessage('ファイルサイズが20MBを超えています。より小さいファイルを選択してください。')
       return
     }
 
-    const reader = new FileReader()
-    reader.onload = () => {
-      setUploadedImage(reader.result as string)
-      setCurrentStep(2)
-    }
-    reader.onerror = () => {
+    try {
+      if (file.type === 'application/pdf') {
+        setStatusText('PDFを画像に変換中...')
+        const dataUrl = await pdfToImage(file)
+        setUploadedImage(dataUrl)
+        setCurrentStep(2)
+      } else {
+        const reader = new FileReader()
+        reader.onload = () => {
+          setUploadedImage(reader.result as string)
+          setCurrentStep(2)
+        }
+        reader.onerror = () => {
+          setErrorMessage('ファイルの読み込みに失敗しました。もう一度お試しください。')
+        }
+        reader.readAsDataURL(file)
+      }
+    } catch {
       setErrorMessage('ファイルの読み込みに失敗しました。もう一度お試しください。')
     }
-    reader.readAsDataURL(file)
   }, [])
 
   const handleFileSelect = useCallback(() => {
@@ -346,10 +376,10 @@ export default function OcrScannerPage() {
               >
                 <Upload size={40} className="mx-auto text-gray-400 mb-3" />
                 <p className="text-gray-700 font-medium">
-                  タップして画像を選択
+                  タップしてファイルを選択
                 </p>
                 <p className="text-sm text-gray-400 mt-1">
-                  JPG, PNG, WebP対応 / 最大10MB
+                  JPG, PNG, WebP, PDF対応 / 最大20MB
                 </p>
                 <p className="text-xs text-gray-400 mt-2">
                   ドラッグ＆ドロップも可能
@@ -359,7 +389,7 @@ export default function OcrScannerPage() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="image/jpeg,image/png,image/webp"
+                accept="image/jpeg,image/png,image/webp,application/pdf"
                 className="hidden"
                 onChange={handleFileSelect}
               />
