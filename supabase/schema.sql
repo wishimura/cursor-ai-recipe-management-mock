@@ -181,7 +181,7 @@ CREATE INDEX idx_monthly_analyses_org_id ON monthly_analyses (org_id);
 -- ============================================================================
 
 -- Helper: get the current user's org_id from their profile
-CREATE OR REPLACE FUNCTION auth.user_org_id()
+CREATE OR REPLACE FUNCTION public.user_org_id()
 RETURNS UUID
 LANGUAGE sql
 STABLE
@@ -196,19 +196,19 @@ ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view their own organization"
     ON organizations FOR SELECT
-    USING (id = auth.user_org_id());
+    USING (id = public.user_org_id());
 
 CREATE POLICY "Owners can update their organization"
     ON organizations FOR UPDATE
-    USING (id = auth.user_org_id())
-    WITH CHECK (id = auth.user_org_id());
+    USING (id = public.user_org_id())
+    WITH CHECK (id = public.user_org_id());
 
 -- ---------- profiles ----------
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Users can view profiles in their organization"
     ON profiles FOR SELECT
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 CREATE POLICY "Users can update their own profile"
     ON profiles FOR UPDATE
@@ -218,7 +218,7 @@ CREATE POLICY "Users can update their own profile"
 CREATE POLICY "Admins and owners can manage profiles in their org"
     ON profiles FOR ALL
     USING (
-        org_id = auth.user_org_id()
+        org_id = public.user_org_id()
         AND (SELECT role FROM profiles WHERE id = auth.uid()) IN ('owner', 'admin')
     );
 
@@ -227,60 +227,60 @@ ALTER TABLE suppliers ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Org members can view suppliers"
     ON suppliers FOR SELECT
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can insert suppliers"
     ON suppliers FOR INSERT
-    WITH CHECK (org_id = auth.user_org_id());
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can update suppliers"
     ON suppliers FOR UPDATE
-    USING (org_id = auth.user_org_id())
-    WITH CHECK (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id())
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can delete suppliers"
     ON suppliers FOR DELETE
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 -- ---------- ingredients ----------
 ALTER TABLE ingredients ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Org members can view ingredients"
     ON ingredients FOR SELECT
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can insert ingredients"
     ON ingredients FOR INSERT
-    WITH CHECK (org_id = auth.user_org_id());
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can update ingredients"
     ON ingredients FOR UPDATE
-    USING (org_id = auth.user_org_id())
-    WITH CHECK (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id())
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can delete ingredients"
     ON ingredients FOR DELETE
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 -- ---------- prep_recipes ----------
 ALTER TABLE prep_recipes ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Org members can view prep_recipes"
     ON prep_recipes FOR SELECT
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can insert prep_recipes"
     ON prep_recipes FOR INSERT
-    WITH CHECK (org_id = auth.user_org_id());
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can update prep_recipes"
     ON prep_recipes FOR UPDATE
-    USING (org_id = auth.user_org_id())
-    WITH CHECK (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id())
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can delete prep_recipes"
     ON prep_recipes FOR DELETE
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 -- ---------- prep_recipe_items ----------
 ALTER TABLE prep_recipe_items ENABLE ROW LEVEL SECURITY;
@@ -289,7 +289,7 @@ CREATE POLICY "Org members can view prep_recipe_items"
     ON prep_recipe_items FOR SELECT
     USING (
         prep_recipe_id IN (
-            SELECT id FROM prep_recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM prep_recipes WHERE org_id = public.user_org_id()
         )
     );
 
@@ -297,7 +297,7 @@ CREATE POLICY "Org members can insert prep_recipe_items"
     ON prep_recipe_items FOR INSERT
     WITH CHECK (
         prep_recipe_id IN (
-            SELECT id FROM prep_recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM prep_recipes WHERE org_id = public.user_org_id()
         )
     );
 
@@ -305,12 +305,12 @@ CREATE POLICY "Org members can update prep_recipe_items"
     ON prep_recipe_items FOR UPDATE
     USING (
         prep_recipe_id IN (
-            SELECT id FROM prep_recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM prep_recipes WHERE org_id = public.user_org_id()
         )
     )
     WITH CHECK (
         prep_recipe_id IN (
-            SELECT id FROM prep_recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM prep_recipes WHERE org_id = public.user_org_id()
         )
     );
 
@@ -318,7 +318,7 @@ CREATE POLICY "Org members can delete prep_recipe_items"
     ON prep_recipe_items FOR DELETE
     USING (
         prep_recipe_id IN (
-            SELECT id FROM prep_recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM prep_recipes WHERE org_id = public.user_org_id()
         )
     );
 
@@ -327,20 +327,20 @@ ALTER TABLE recipes ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Org members can view recipes"
     ON recipes FOR SELECT
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can insert recipes"
     ON recipes FOR INSERT
-    WITH CHECK (org_id = auth.user_org_id());
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can update recipes"
     ON recipes FOR UPDATE
-    USING (org_id = auth.user_org_id())
-    WITH CHECK (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id())
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can delete recipes"
     ON recipes FOR DELETE
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 -- ---------- recipe_items ----------
 ALTER TABLE recipe_items ENABLE ROW LEVEL SECURITY;
@@ -349,7 +349,7 @@ CREATE POLICY "Org members can view recipe_items"
     ON recipe_items FOR SELECT
     USING (
         recipe_id IN (
-            SELECT id FROM recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM recipes WHERE org_id = public.user_org_id()
         )
     );
 
@@ -357,7 +357,7 @@ CREATE POLICY "Org members can insert recipe_items"
     ON recipe_items FOR INSERT
     WITH CHECK (
         recipe_id IN (
-            SELECT id FROM recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM recipes WHERE org_id = public.user_org_id()
         )
     );
 
@@ -365,12 +365,12 @@ CREATE POLICY "Org members can update recipe_items"
     ON recipe_items FOR UPDATE
     USING (
         recipe_id IN (
-            SELECT id FROM recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM recipes WHERE org_id = public.user_org_id()
         )
     )
     WITH CHECK (
         recipe_id IN (
-            SELECT id FROM recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM recipes WHERE org_id = public.user_org_id()
         )
     );
 
@@ -378,7 +378,7 @@ CREATE POLICY "Org members can delete recipe_items"
     ON recipe_items FOR DELETE
     USING (
         recipe_id IN (
-            SELECT id FROM recipes WHERE org_id = auth.user_org_id()
+            SELECT id FROM recipes WHERE org_id = public.user_org_id()
         )
     );
 
@@ -387,40 +387,40 @@ ALTER TABLE inventory_records ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Org members can view inventory_records"
     ON inventory_records FOR SELECT
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can insert inventory_records"
     ON inventory_records FOR INSERT
-    WITH CHECK (org_id = auth.user_org_id());
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can update inventory_records"
     ON inventory_records FOR UPDATE
-    USING (org_id = auth.user_org_id())
-    WITH CHECK (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id())
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can delete inventory_records"
     ON inventory_records FOR DELETE
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 -- ---------- monthly_analyses ----------
 ALTER TABLE monthly_analyses ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Org members can view monthly_analyses"
     ON monthly_analyses FOR SELECT
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can insert monthly_analyses"
     ON monthly_analyses FOR INSERT
-    WITH CHECK (org_id = auth.user_org_id());
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can update monthly_analyses"
     ON monthly_analyses FOR UPDATE
-    USING (org_id = auth.user_org_id())
-    WITH CHECK (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id())
+    WITH CHECK (org_id = public.user_org_id());
 
 CREATE POLICY "Org members can delete monthly_analyses"
     ON monthly_analyses FOR DELETE
-    USING (org_id = auth.user_org_id());
+    USING (org_id = public.user_org_id());
 
 -- ============================================================================
 -- TRIGGER: Auto-create organization + profile on new user signup
