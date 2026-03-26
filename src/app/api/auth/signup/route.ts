@@ -5,22 +5,29 @@ function generateSlug(name: string): string {
   return name
     .toLowerCase()
     .trim()
-    .replace(/[\s\u3000]+/g, '-')        // spaces (including full-width) to hyphens
-    .replace(/[^\w\u3040-\u30FF\u4E00-\u9FFF-]/g, '') // keep alphanumeric, Japanese chars, hyphens
-    .replace(/-+/g, '-')                  // collapse consecutive hyphens
-    .replace(/^-|-$/g, '')                // trim leading/trailing hyphens
+    .replace(/[\s\u3000]+/g, '-')
+    .replace(/[^\w\u3040-\u30FF\u4E00-\u9FFF-]/g, '')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
     .substring(0, 60)
-    || `org-${Date.now()}`                // fallback
+    || `org-${Date.now()}`
 }
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { user_id, email, full_name, org_name } = body
+    const { email, password, full_name, org_name } = body
 
-    if (!user_id || !full_name || !org_name) {
+    if (!email || !password || !full_name || !org_name) {
       return NextResponse.json(
         { error: '必須項目が不足しています' },
+        { status: 400 }
+      )
+    }
+
+    if (password.length < 6) {
+      return NextResponse.json(
+        { error: 'パスワードは6文字以上で入力してください' },
         { status: 400 }
       )
     }
@@ -36,15 +43,46 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Create user via Admin API (bypasses email confirmation)
+    const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      email,
+      password,
+      email_confirm: true,
+      user_metadata: {
+        full_name,
+        org_name,
+      },
+    })
+
+    if (authError) {
+      console.error('Auth user creation failed:', authError)
+      const msg = authError.message || ''
+      if (msg.includes('already been registered') || msg.includes('already exists')) {
+        return NextResponse.json(
+          { error: 'このメールアドレスは既に登録されています' },
+          { status: 409 }
+        )
+      }
+      return NextResponse.json(
+        { error: '登録に失敗しました。しばらく経ってからお試しください。' },
+        { status: 500 }
+      )
+    }
+
+    const userId = authData.user.id
+
+    // Wait briefly for trigger to fire
+    await new Promise((resolve) => setTimeout(resolve, 500))
+
     // Check if the DB trigger already created the profile
-    const { data: existingProfile, error: profileCheckError } = await supabase
+    const { data: existingProfile } = await supabase
       .from('profiles')
       .select('id, org_id')
-      .eq('id', user_id)
+      .eq('id', userId)
       .single()
 
     if (existingProfile) {
-      // Trigger already handled it — update org name if needed
+      // Trigger handled it — update org name if needed
       if (org_name) {
         await supabase
           .from('organizations')
@@ -54,25 +92,13 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: true, org_id: existingProfile.org_id })
     }
 
-    // If table doesn't exist, return clear error
-    if (profileCheckError && profileCheckError.message?.includes('relation') && profileCheckError.message?.includes('does not exist')) {
-      console.error('Tables not created:', profileCheckError)
-      return NextResponse.json(
-        { error: 'データベースのテーブルが未作成です。Supabaseの SQL Editor でスキーマを実行してください。' },
-        { status: 500 }
-      )
-    }
-
     // Trigger didn't fire — create manually
     const baseSlug = generateSlug(org_name)
     const slug = `${baseSlug}-${Date.now().toString(36)}`
 
     const { data: org, error: orgError } = await supabase
       .from('organizations')
-      .insert({
-        name: org_name,
-        slug,
-      })
+      .insert({ name: org_name, slug })
       .select('id')
       .single()
 
@@ -87,9 +113,9 @@ export async function POST(request: NextRequest) {
     const { error: profileError } = await supabase
       .from('profiles')
       .insert({
-        id: user_id,
+        id: userId,
         org_id: org.id,
-        email: email || '',
+        email,
         full_name,
         role: 'owner',
       })

@@ -64,67 +64,50 @@ export default function LoginPage() {
       return
     }
 
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
+    // Create user + org + profile via server-side Admin API
+    try {
+      const res = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email,
+          password,
           full_name: fullName,
           org_name: organizationName,
-        },
-      },
-    })
+        }),
+      })
 
-    if (error) {
-      const msg = error.message
+      if (!res.ok) {
+        let errorMsg = '登録に失敗しました'
+        try {
+          const body = await res.json()
+          errorMsg = body.error || errorMsg
+        } catch {
+          // レスポンスがJSONでない場合
+        }
+        throw new Error(errorMsg)
+      }
+    } catch (err) {
       setError(
-        msg === 'User already registered'
-          ? 'このメールアドレスは既に登録されています'
-          : msg.includes('not match the expected pattern')
-          ? 'メールアドレスの形式が正しくありません'
-          : msg === 'Signup requires a valid password'
-          ? 'パスワードを入力してください'
-          : msg.includes('Password should be')
-          ? 'パスワードは6文字以上で入力してください'
-          : `登録に失敗しました。しばらく経ってからお試しください。`
+        err instanceof Error
+          ? err.message
+          : '登録中にエラーが発生しました。しばらく経ってからお試しください。'
       )
       setLoading(false)
       return
     }
 
-    // Create organization and profile via API
-    if (data.user) {
-      try {
-        const res = await fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: data.user.id,
-            email: data.user.email,
-            full_name: fullName,
-            org_name: organizationName,
-          }),
-        })
+    // User created & confirmed — now sign in
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
 
-        if (!res.ok) {
-          let errorMsg = 'プロフィールの作成に失敗しました'
-          try {
-            const body = await res.json()
-            errorMsg = body.error || errorMsg
-          } catch {
-            // レスポンスがJSONでない場合
-          }
-          throw new Error(errorMsg)
-        }
-      } catch (err) {
-        setError(
-          err instanceof Error
-            ? err.message
-            : '組織の作成中にエラーが発生しました。しばらく経ってからお試しください。'
-        )
-        setLoading(false)
-        return
-      }
+    if (loginError) {
+      setError('アカウントは作成されました。ログインタブからログインしてください。')
+      setMode('login')
+      setLoading(false)
+      return
     }
 
     router.push('/dashboard')
